@@ -1,0 +1,51 @@
+street_name,street_id,speed_limit_kph,lanes
+Südosttangente (A23),VIE-001,80,2
+Donauuferautobahn (A22),VIE-002,80,3
+Ostautobahn (A4),VIE-003,80,3
+Westautobahn (A1),VIE-004,130,3
+S1 Wiener Außenring,VIE-005,130,4
+Triester Straße,VIE-006,50,2
+Wagramer Straße,VIE-007,50,2
+Prager Straße,VIE-008,50,1
+Brünner Straße,VIE-009,50,1
+Gürtel (Outer),VIE-010,50,3
+Gürtel (Inner),VIE-011,50,3
+Ringstraße,VIE-012,50,1
+Franz-Josefs-Kai,VIE-013,50,3
+Zweierlinie,VIE-014,50,2
+Altmannsdorfer Straße,VIE-015,50,1
+Grünbergstraße,VIE-016,50,1
+Linke Wienzeile,VIE-017,50,1
+Rechte Wienzeile,VIE-018,50,2
+Handelskai,VIE-019,50,2
+Donaustadtstraße,VIE-020,50,2
+Mariahilfer Straße,VIE-021,50,1
+Kärntner Straße,VIE-022,50,1
+Graben,VIE-023,30,1
+Rotenturmstraße,VIE-024,50,2
+Landstraßer Hauptstraße,VIE-025,50,1
+Favoritenstraße,VIE-026,50,1
+Simmeringer Hauptstraße,VIE-027,50,1
+Thaliastraße,VIE-028,50,1
+Ottakringer Straße,VIE-029,50,2
+Hernalser Hauptstraße,VIE-030,50,2
+Währinger Straße,VIE-031,50,1
+Döblinger Hauptstraße,VIE-032,50,1
+Heiligenstädter Straße,VIE-033,50,2
+Nußdorfer Straße,VIE-034,50,2
+Alser Straße,VIE-035,50,1
+Josefstädter Straße,VIE-036,50,2
+Burggasse,VIE-037,30,1
+Neustiftgasse,VIE-038,30,1
+Lerchenfelder Straße,VIE-039,50,2
+Gumpendorfer Straße,VIE-040,50,2
+Margaretenstraße,VIE-041,50,2
+Wiedner Hauptstraße,VIE-042,50,1
+Ungargasse,VIE-043,50,1
+Rennweg,VIE-044,50,1
+Praterstraße,VIE-045,50,1
+Taborstraße,VIE-046,50,2
+Wallensteinstraße,VIE-047,50,1
+Jägerstraße,VIE-048,50,2
+Dresdner Straße,VIE-049,50,1
+Engerthstraße,VIE-050,50,1
