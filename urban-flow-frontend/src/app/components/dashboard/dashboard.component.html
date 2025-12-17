@@ -1,0 +1,10 @@
+<div class="dashboard-container">
+    <app-map (sensorSelected)="onSensorSelected($event)"></app-map>
+    <app-sidebar 
+        [selectedSensorId]="selectedSensorId"
+        (close)="onSidebarClosed()">
+    </app-sidebar>
+    
+    <!-- Title Overlay -->
+    <div class="app-title">UrbanFlow</div>
+</div>
