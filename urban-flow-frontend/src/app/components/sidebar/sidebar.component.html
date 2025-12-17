@@ -1,46 +1,45 @@
-<div class="sidebar" *ngIf="selectedSensor">
+@if (selectedSensor) {
+  <div class="sidebar">
     <div class="sidebar-header">
-        <div>
-            <span class="label">SENSOR: {{selectedSensor.name | uppercase}}</span>
-            <div class="location">Loc: {{selectedSensor.description}}</div>
-        </div>
-        <button class="close-btn" (click)="closeSidebar()">×</button>
+      <div>
+        <span class="label">SENSOR: {{selectedSensor.name | uppercase}}</span>
+        <div class="location">Loc: {{selectedSensor.description}}</div>
+      </div>
+      <button class="close-btn" (click)="closeSidebar()">×</button>
     </div>
-
     <div class="status-card" [style.border-left-color]="congestionColor">
-        <div class="status-indicator" [style.background-color]="congestionColor"></div>
-        <div class="status-info">
-            <div class="status-label">{{congestionLevel.replace('_', ' ') | uppercase}}</div>
-            <div class="ci-value">CI: {{currentData?.congestionIndex | number:'1.2-2'}}</div>
-        </div>
+      <div class="status-indicator" [style.background-color]="congestionColor"></div>
+      <div class="status-info">
+        <div class="status-label">{{congestionLevel.replace('_', ' ') | uppercase}}</div>
+        <div class="ci-value">CI: {{currentData?.congestionIndex | number:'1.2-2'}}</div>
+      </div>
     </div>
-
     <div class="metrics-grid">
-        <div class="metric-item">
-            <div class="icon">🚗</div>
-            <div class="metric-content">
-                <div class="metric-label">Avg Speed</div>
-                <div class="metric-value">
-                    <span [@valueChange]="currentData?.avgSpeed">{{currentData?.avgSpeed}}</span> 
-                    <span class="unit">km/h</span>
-                </div>
-            </div>
+      <div class="metric-item">
+        <div class="icon">🚗</div>
+        <div class="metric-content">
+          <div class="metric-label">Avg Speed</div>
+          <div class="metric-value">
+            <span [@valueChange]="currentData?.avgSpeed">{{currentData?.avgSpeed}}</span>
+            <span class="unit">km/h</span>
+          </div>
         </div>
-        <div class="metric-item">
-            <div class="icon">📊</div>
-            <div class="metric-content">
-                <div class="metric-label">Volume</div>
-                <div class="metric-value">
-                    <span [@valueChange]="currentData?.vehicleCount">{{currentData?.vehicleCount}}</span>
-                    <span class="unit">vehs/int</span>
-                </div>
-            </div>
+      </div>
+      <div class="metric-item">
+        <div class="icon">📊</div>
+        <div class="metric-content">
+          <div class="metric-label">Volume</div>
+          <div class="metric-value">
+            <span [@valueChange]="currentData?.vehicleCount">{{currentData?.vehicleCount}}</span>
+            <span class="unit">vehs/int</span>
+          </div>
         </div>
+      </div>
     </div>
-
     <div class="context-info">
-        <h3>Reference Values (Context)</h3>
-        <div class="row"><span>Speed Limit (V-free):</span> <span>80 km/h</span></div>
-        <div class="row"><span>Normal Volume:</span> <span>~60 vehs/int</span></div>
+      <h3>Reference Values (Context)</h3>
+      <div class="row"><span>Speed Limit (V-free):</span> <span>80 km/h</span></div>
+      <div class="row"><span>Normal Volume:</span> <span>~60 vehs/int</span></div>
     </div>
-</div>
+  </div>
+}
