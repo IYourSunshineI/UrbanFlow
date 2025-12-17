@@ -15,6 +15,8 @@ export interface TrafficData {
   vehicleCount: number; // per interval
   congestionIndex: number; // CI
   status: 'free' | 'dense' | 'near_capacity' | 'congested';
+  history: number[]; // Sparkline data (last 20 speed values)
+  vehicleHistory?: number[]; // Sparkline data (last 20 vehicle count values)
 }
 
 @Injectable({
@@ -70,13 +72,28 @@ export class TrafficService {
         else if (ci <= 2.0) status = 'near_capacity';
         else status = 'congested';
 
+        // Use integer for consistency in display and graph
+        const finalAvgSpeed = Math.floor(avgSpeed);
+
+        // Maintain history buffer
+        const previousData = this.trafficState.value.get(sensor.id);
+        const history = previousData?.history ? [...previousData.history] : [];
+        history.push(finalAvgSpeed);
+        if (history.length > 20) history.shift(); // Keep last 20
+
+        const vehicleHistory = previousData?.vehicleHistory ? [...previousData.vehicleHistory] : [];
+        vehicleHistory.push(vehicleCount);
+        if (vehicleHistory.length > 20) vehicleHistory.shift();
+
         newData.set(sensor.id, {
           sensorId: sensor.id,
           timestamp: new Date(),
-          avgSpeed: Math.floor(avgSpeed),
+          avgSpeed: finalAvgSpeed,
           vehicleCount,
           congestionIndex: parseFloat(ci.toFixed(2)),
-          status
+          status,
+          history,
+          vehicleHistory
         });
       });
 

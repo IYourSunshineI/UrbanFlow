@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
+
 import { TrafficService, Sensor, TrafficData } from '../../services/traffic.service';
 import { Subscription } from 'rxjs';
 
@@ -18,6 +19,8 @@ export class MapComponent implements OnInit, OnDestroy {
   private markers: Map<string, L.Marker> = new Map();
   private trafficSub: Subscription | undefined;
   private isBrowser: boolean;
+
+  private currentTrafficData: Map<string, TrafficData> = new Map();
 
   constructor(
     private trafficService: TrafficService,
@@ -37,9 +40,18 @@ export class MapComponent implements OnInit, OnDestroy {
     if (this.trafficSub) {
       this.trafficSub.unsubscribe();
     }
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
   }
 
   private initMap(): void {
+    // Safety check for HMR
+    if (this.map) {
+        this.map.remove();
+    }
+
     // Center on Vienna
     this.map = L.map('map', {
       zoomControl: false, // Custom placement if needed, or default
@@ -53,11 +65,17 @@ export class MapComponent implements OnInit, OnDestroy {
       maxZoom: 20
     }).addTo(this.map);
 
-    // Add sensors
+    // ... markers added later or by filter ...
+    // Note: initMap doesn't add markers directly anymore because subscribeToTraffic/filter handles it?
+    // Wait, previous code added sensors in initMap.
+    // We should keep that behavior or ensure filter runs. 
+    // The previous code had:
     const sensors = this.trafficService.getSensors();
     sensors.forEach(sensor => {
       const marker = L.marker([sensor.location.lat, sensor.location.lng], {
-        icon: this.createCustomIcon('free') // Default state
+        icon: this.createCustomIcon('free'), // Default state
+        title: sensor.name,
+        alt: `Sensor at ${sensor.name}`
       }).addTo(this.map!)
         .bindTooltip(`
           <div class="custom-tooltip-content">
@@ -80,13 +98,57 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   }
 
+  private currentSearchTerm = '';
+  private currentActiveStatuses: string[] = [];
+
+  // Public API for Dashboard Filter
+  filterSensors(searchTerm: string, activeStatuses: string[]): void {
+      this.currentSearchTerm = searchTerm.toLowerCase();
+      this.currentActiveStatuses = activeStatuses;
+      this.applyFilters();
+  }
+
+  private applyFilters(): void {
+      this.markers.forEach((marker, sensorId) => {
+          this.updateMarkerVisibility(sensorId, marker);
+      });
+  }
+
+  private updateMarkerVisibility(sensorId: string, marker: L.Marker): void {
+      const sensor = this.trafficService.getSensors().find(s => s.id === sensorId);
+      const data = this.currentTrafficData.get(sensorId);
+      
+      if (!sensor) return;
+
+      const matchesSearch = sensor.name.toLowerCase().includes(this.currentSearchTerm) || 
+                            sensor.description.toLowerCase().includes(this.currentSearchTerm);
+      
+      const status = data?.status || 'free'; 
+      const matchesStatus = this.currentActiveStatuses.length === 0 || this.currentActiveStatuses.includes(status);
+
+      if (matchesSearch && matchesStatus) {
+          if (!this.map?.hasLayer(marker)) {
+              marker.addTo(this.map!);
+          }
+      } else {
+          if (this.map?.hasLayer(marker)) {
+              this.map?.removeLayer(marker);
+          }
+      }
+  }
+
   private subscribeToTraffic(): void {
     this.trafficSub = this.trafficService.trafficData$.subscribe(dataMap => {
-        dataMap.forEach((data, sensorId) => {
-            const marker = this.markers.get(sensorId);
-            if (marker) {
+        this.currentTrafficData = dataMap;
+        
+        // Update Markers and re-apply filter logic
+        this.markers.forEach((marker, sensorId) => {
+            const data = dataMap.get(sensorId);
+            if (data) {
                 const newIcon = this.createCustomIcon(data.status);
                 marker.setIcon(newIcon);
+                // Re-evaluate visibility because status (which affects filtering) might have changed
+                this.updateMarkerVisibility(sensorId, marker);
             }
         });
     });

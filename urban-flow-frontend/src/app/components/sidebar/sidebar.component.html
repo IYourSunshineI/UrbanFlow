@@ -5,7 +5,7 @@
         <span class="label">SENSOR: {{selectedSensor.name | uppercase}}</span>
         <div class="location">Loc: {{selectedSensor.description}}</div>
       </div>
-      <button class="close-btn" (click)="closeSidebar()">×</button>
+      <button class="close-btn" (click)="closeSidebar()" aria-label="Close details panel">×</button>
     </div>
     <div class="status-card" [style.border-left-color]="congestionColor">
       <div class="status-indicator" [style.background-color]="congestionColor"></div>
@@ -22,6 +22,9 @@
           <div class="metric-value">
             <span [@valueChange]="currentData?.avgSpeed">{{currentData?.avgSpeed}}</span>
             <span class="unit">km/h</span>
+            <svg class="sparkline" width="100" height="30" *ngIf="currentData?.history">
+              <path [attr.d]="getSparklinePath(currentData!.history, 120)" fill="none" stroke="currentColor" stroke-width="2" />
+            </svg>
           </div>
         </div>
       </div>
@@ -32,6 +35,9 @@
           <div class="metric-value">
             <span [@valueChange]="currentData?.vehicleCount">{{currentData?.vehicleCount}}</span>
             <span class="unit">vehs/int</span>
+            <svg class="sparkline" width="100" height="30" *ngIf="currentData?.vehicleHistory">
+              <path [attr.d]="getSparklinePath(currentData!.vehicleHistory, 150)" fill="none" stroke="currentColor" stroke-width="2" />
+            </svg>
           </div>
         </div>
       </div>

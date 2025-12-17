@@ -93,4 +93,27 @@ export class SidebarComponent implements OnChanges, OnDestroy {
          default: return 'var(--color-text-secondary)';
      }
   }
+
+  getSparklinePath(data: number[] | undefined, maxVal: number = 100): string {
+    if (!data || data.length < 2) return '';
+    
+    const width = 100;
+    const height = 30;
+    const min = 0;
+    // Dynamic max can be better? For now user provided fixed max context
+    // Speed max ~ 120, Volume max ~ 150 (rush hour peak)
+    
+    return data.map((val, i) => {
+      // Use minimal padding logic
+      // We want the last point to be exactly at the right edge
+      const padding = 2;
+      const effectiveWidth = width - (2 * padding);
+      
+      const x = padding + (i * (effectiveWidth / (data.length - 1)));
+      
+      // Scale Y
+      const y = height - ((val - min) / (maxVal - min)) * height; 
+      return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
+    }).join(' ');
+  }
 }

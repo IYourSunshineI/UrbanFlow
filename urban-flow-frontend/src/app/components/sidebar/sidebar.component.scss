@@ -103,15 +103,40 @@
 
         .icon { font-size: 1.2rem; }
         
-        .metric-label {
-             font-size: 0.8rem;
-             color: var(--color-text-secondary);
-        }
-        
-        .metric-value {
-             font-size: 1.1rem;
-             font-weight: 600;
-             .unit { font-size: 0.8rem; font-weight: 400; color: var(--color-text-secondary); }
+        .metric-content {
+             flex: 1; // Take available space
+             
+             .metric-label {
+                 font-size: 0.8rem;
+                 color: var(--color-text-secondary);
+             }
+             
+             .metric-value {
+                 font-size: 1.1rem;
+                 font-weight: 600;
+                 display: flex;
+                 align-items: center;
+                 gap: 8px;
+                 
+                 .unit { font-size: 0.8rem; font-weight: 400; color: var(--color-text-secondary); }
+                 
+                 .sparkline {
+                     margin-left: auto;
+                     margin-right: 0px; // "bit of space" from right border
+                     height: 30px;
+                     opacity: 0.8;
+                     overflow: visible;
+                     // Fade out the left end (history)
+                     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 33%);
+                     mask-image: linear-gradient(to right, transparent 0%, black 33%);
+                     
+                     path {
+                         vector-effect: non-scaling-stroke;
+                         stroke: #eee;
+                         filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+                     }
+                 }
+             }
         }
     }
 }

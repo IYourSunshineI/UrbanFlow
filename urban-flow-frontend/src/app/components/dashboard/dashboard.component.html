@@ -7,4 +7,33 @@
     
     <!-- Title Overlay -->
     <div class="app-title">UrbanFlow</div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input 
+                type="text" 
+                placeholder="Search streets..." 
+                [(ngModel)]="searchTerm"
+                (input)="updateFilter()"
+                aria-label="Search sensors by name"
+            >
+        </div>
+        <div class="status-toggles" role="group" aria-label="Traffic Status Filters">
+            <button 
+                *ngFor="let status of filterStatuses"
+                class="status-pill"
+                [class.active]="status.active"
+                [style.--pill-color]="status.color"
+                (click)="toggleStatus(status.id)"
+                [attr.aria-pressed]="status.active"
+            >
+                <div class="dot" [style.background-color]="status.color"></div>
+                {{ status.label }}
+            </button>
+        </div>
+        
+
+    </div>
 </div>
