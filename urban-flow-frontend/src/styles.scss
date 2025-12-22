@@ -1,0 +1,65 @@
+/* UrbanFlow Design System - Premium Dark Theme */
+@import 'leaflet/dist/leaflet.css';
+
+:root {
+  /* Core Colors */
+  --color-bg-dark: #121212;
+  --color-bg-panel: rgba(30, 30, 30, 0.85); /* Glassmorphism base */
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  
+  /* Status Colors (Neon) */
+  --color-success: #00ff9d;
+  --color-warning: #ffbf00; /* Amber/Yellow due to "yellow" in table, but made vibrant */
+  --color-danger: #ff5252;
+  --color-critical: #ff0055; /* Deep red/pink for severe */
+
+  /* UI Accents */
+  --color-accent: #2979ff;
+  --border-radius-base: 12px;
+  --box-shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.5);
+  --border-glass: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-primary);
+  overflow: hidden; /* App-like feel */
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-dark); 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #333; 
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+/* Typography Utilities */
+.h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+.h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+.subtitle { color: var(--color-text-secondary); font-size: 0.9rem; }
+
+/* Layout Utilities */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+
+/* Custom Leaflet Dark Mode Tweaks (if needed beyond tile provider) */
+.leaflet-container {
+    background: #000 !important;
+}
