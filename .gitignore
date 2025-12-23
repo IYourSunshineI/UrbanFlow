@@ -243,3 +243,5 @@ terraform.rc
 # End of https://www.toptal.com/developers/gitignore/api/angular,terraform,python
 
 *.zip
+volume
+.venv
