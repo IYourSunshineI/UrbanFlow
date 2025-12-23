@@ -4,16 +4,20 @@ This directory contains the Terraform configuration for deploying the UrbanFlow 
 
 ## Prerequisites
 
-- **LocalStack**: Ensure LocalStack is installed and running (`localstack start`).
-- **Terraform**: Install Terraform to provision infrastructure.
-- **Python**: Required for Lambda functions (runtime `python3.13`).
-- **Node/npm**: Required for building the frontend (if running locally or via Amplify).
+The following tools are required to run the infrastructure and deployment scripts:
+
+-   **Docker** & **Docker Compose**: To containerize and run LocalStack.
+-   **Terraform**: To provision infrastructure as code.
+-   **Python** (3.13): Required for Lambda function runtime.
+-   **Node.js** & **npm**: Required for building the frontend.
+-   **AWS CLI** (optional but recommended): For interacting with LocalStack manually.
 
 ## Setup & Deployment
 
 1.  **Start LocalStack**
+    Use Docker Compose to start the LocalStack service in the background:
     ```bash
-    localstack start
+    docker-compose up -d
     ```
 
 2.  **Initialize Terraform**
@@ -61,19 +65,16 @@ If you need to see the URLs again later:
 terraform output
 ```
 
-## Troubleshooting
+## Testing
 
-### API Gateway DNS Issues
-If you encounter "Hmm we're having trouble finding that site" or DNS resolution errors for `*.localhost.localstack.cloud` domains, ensure your `hosts` file is correctly configured as shown above.
+To verify that the Lambda functions and Kinesis streams are working correctly, you can run the provided test script. This script sends a record to the Kinesis stream and then queries the API Gateway to verify the data was processed.
 
-**Workaround**: Use the path-style URL for the API Gateway, which bypasses DNS subdomain resolution:
-```
-http://localhost:4566/_aws/execute-api/<api-id>/traffic
-```
-You can find this URL in the `local_api_url` output from Terraform.
-
-### "UnrecognizedClientException"
-If you see auth errors, ensure your `provider.tf` correctly points all services to `http://localhost:4566`.
+1.  **Run the Test Script**
+    Ensure you are in the `infrastructure` directory:
+    ```bash
+    ./test/test_lambdas.sh
+    ```
+    *Note: You might need to make the script executable first with `chmod +x test/test_lambdas.sh`.*
 
 ## Configuration
 
