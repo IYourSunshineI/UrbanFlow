@@ -3,6 +3,7 @@ from datetime import datetime
 import boto3
 import os
 import json
+import base64
 
 AGGREGATION_FUNCTION_NAME = os.getenv('AGGREGATION_FUNCTION_NAME')
 
@@ -86,39 +87,44 @@ def forward_to_aggregation(payload):
         Payload=json.dumps(payload).encode('utf-8'))
 
 
-def get_caller_ip(event):
-    try:
-        # REST API
-        return event["requestContext"]["identity"]["sourceIp"]
-    except KeyError:
+def parse_kinesis_records(records):
+    parsed_records = []
+    for record in records:
         try:
-            # HTTP API
-            return event["requestContext"]["http"]["sourceIp"]
-        except KeyError:
-            return "unknown"
+            payload = base64.b64decode(record['kinesis']['data']).decode('utf-8')
+            data = json.loads(payload)
+            parsed_records.append(data)
+        except Exception as e:
+            print(f"Error decoding record: {e}")
+            continue
+    return parsed_records
 
 
 def lambda_handler(event, context):
-    print(f"Validating data from: {get_caller_ip(event)}")
-    is_valid, error_message = validate_schema(event)
-    if not is_valid:
-        print(f"Validation failed: {error_message}")
-        return {
-            'statusCode': 400,
-            'body': json.dumps({'error': error_message})
-        }
+    records = event.get("Records", [])
+    if not records:
+        print("No records found in event")
+        return
 
-    is_valid, error_message = validate_data(event)
-    if not is_valid:
-        print(f"Validation failed: {error_message}")
-        return {
-            'statusCode': 422,
-            'body': json.dumps({'error': error_message})
-        }
+    parsed_records = parse_kinesis_records(records)
+    print(f"Validating {len(parsed_records)} records...")
+    valids = []
+    for record in parsed_records:
+        is_valid, error_message = validate_schema(record)
+        if not is_valid:
+            print(f"Schema validation failed: {record} - {error_message}")
+            continue
 
-    forward_to_aggregation(event)
+        is_valid, error_message = validate_data(record)
+        if not is_valid:
+            print(f"Data validation failed: {record} - {error_message}")
+            continue
 
-    return {
-        'statusCode': 202,
-        'body': json.dumps({'status': 'accepted'})
-    }
+        valids.append(record)
+
+    if not valids:
+        print("No valid records to forward")
+        return
+
+    print(f"Forwarding {len(valids)} valid records to aggregation")
+    forward_to_aggregation(valids)
