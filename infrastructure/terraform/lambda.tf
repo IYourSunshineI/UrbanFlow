@@ -77,7 +77,7 @@ resource "aws_lambda_event_source_mapping" "kinesis_trigger" {
 resource "aws_lambda_function" "data_reader" {
   function_name = "UrbanFlowDataReader"
   role          = aws_iam_role.lambda_exec.arn
-  handler       = "data_reader.lambda_handler"
+  handler       = "reader.lambda_handler"
   runtime       = "python3.13"
   timeout       = 10
 
@@ -87,7 +87,7 @@ resource "aws_lambda_function" "data_reader" {
 
   environment {
     variables = {
-      TABLE_NAME = aws_dynamodb_table.traffic_data.name
+      AGGREGATED_DATA_TABLE_NAME = aws_dynamodb_table.traffic_data.name
     }
   }
 }
