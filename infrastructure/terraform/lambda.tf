@@ -91,3 +91,17 @@ resource "aws_lambda_function" "data_reader" {
     }
   }
 }
+
+resource "aws_lambda_function" "validator"{
+    function_name = "UrbanFlowValidator"
+    role = aws_iam_role.lambda_exec.arn
+    handler = "validator.lambda_handler"
+    runtime = "python3.13"
+    timeout = 10
+
+    environment  {
+        variables = {
+            AGGREGATION_FUNCTION_NAME = TODO
+        }
+    }
+}
