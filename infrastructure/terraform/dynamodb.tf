@@ -19,3 +19,26 @@ resource "aws_dynamodb_table" "traffic_data" {
     enabled        = true
   }
 }
+
+# Additional table for aggregated data
+resource "aws_dynamodb_table" "aggregated_traffic_data" {
+  name           = "UrbanFlowAggregatedTrafficData"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "street_id"
+  range_key      = "timestamp_utc"
+
+  attribute {
+    name = "street_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "timestamp_utc"
+    type = "N"
+  }
+
+  ttl {
+    attribute_name = "expiration_time"
+    enabled        = true
+  }
+}
