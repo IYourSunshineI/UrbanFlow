@@ -1,23 +1,28 @@
 import json
 import base64
+from time import time
 import boto3
 import os
 from datetime import datetime
 from decimal import Decimal
 
-# TODO: Adapt according to actual setup
 dynamodb = boto3.resource('dynamodb')
-TABLE_NAME = os.environ.get('AGGREGATION_TABLE', 'StreetSpeedAggregates')
+TABLE_NAME = os.environ.get('TABLE_NAME', 'StreetSpeedAggregates')
 table = dynamodb.Table(TABLE_NAME)
 
 lambda_client = boto3.client('lambda')
 CALCULATION_ARN = os.environ.get('CONGESTION_CALCULATION_ARN')
 
+RETENTION_DAYS = int(os.environ.get('RETENTION_DAYS', '30'))
+RETENTION_SECONDS = RETENTION_DAYS * 24 * 60 * 60
+
+""" TODO: delete on integration with validation lambda
+
 def lambda_handler(event, context):
     """
-    Triggered by Kinesis Data Streams.
-    Aggregates incoming batches of vehicle detections to compute average speed per street.
-    """
+    #Triggered by Kinesis Data Streams.
+    #Aggregates incoming batches of vehicle detections to compute average speed per street.
+"""
     data_points = parse_kinesis_records(event['Records'])
 
     if not data_points:
@@ -32,8 +37,8 @@ def lambda_handler(event, context):
 
 def parse_kinesis_records(records):
     """
-    Helper function to parse Kinesis records.
-    """
+    #Helper function to parse Kinesis records.
+"""
     parsed_records = []
     for record in records:
         try:
@@ -44,6 +49,27 @@ def parse_kinesis_records(records):
             print(f"Error decoding record: {e}")
             continue
     return parsed_records
+"""
+
+def lambda_handler(event, context):
+    """
+    Triggered by Validation Lambda.
+    """
+    data_points = event
+
+    if not isinstance(data_points, list):
+        print(f"Unexpected data format. Expected list, got {type(data_points)}")
+        return {'statusCode': 400, 'message': 'Invalid data format'}
+    
+    if not data_points:
+        print("No valid data points found.")
+        return {'statusCode': 200, 'message': 'No data points to process'}
+    
+    street_stats = aggregate_metrics(data_points)
+    timestamp = datetime.now().isoformat()
+    persist_aggregated_data(street_stats, timestamp)
+
+    return {'statusCode': 200, 'message': 'Data aggregated and persisted'}
 
 def aggregate_metrics(data_points):
     """
@@ -104,6 +130,8 @@ def persist_aggregated_data(street_stats, timestamp):
     """
     Persist aggregated data to DynamoDB.
     """
+    expiration_timestamp = int(time.time()) + RETENTION_SECONDS
+
     with table.batch_writer() as batch:
         for s_id, stats in street_stats.items():
             avg_speed = stats['total_speed'] / stats['vehicle_count'] if stats['vehicle_count'] > 0 else 0
@@ -117,7 +145,8 @@ def persist_aggregated_data(street_stats, timestamp):
                 'speed_limit_kph': stats['speed_limit'],
                 'vehicle_count': stats['vehicle_count'],
                 'congestion_index': Decimal(str(round(congestion_index, 4))),
-                'timestamp_utc': timestamp
+                'timestamp_utc': timestamp,
+                'expiration_timestamp': expiration_timestamp
             }
             batch.put_item(Item=item)
 
