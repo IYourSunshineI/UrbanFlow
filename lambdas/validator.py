@@ -46,7 +46,7 @@ def validate_data(payload):
     if payload["street_id"] == "":
         return False, "street_id cannot be empty"
 
-    if not re.match(CAMERA_ID_PATTERN, payload["camera_id"]):
+    if not CAMERA_ID_PATTERN.match(payload["camera_id"]):
         return False, "camera_id format is invalid"
 
     try:
@@ -54,10 +54,10 @@ def validate_data(payload):
     except ValueError:
         return False, "timestamp format is invalid"
 
-    if not re.match(LICENSE_PLATE_PATTERN, payload["license_plate"]):
+    if not LICENSE_PLATE_PATTERN.match(payload["license_plate"]):
         return False, "license_plate format is invalid"
 
-    if payload["speed_kph"] < 0 or payload["speed_limit"] > MAX_VALID_SPEED:
+    if payload["speed_kph"] < 0 or payload["speed_kph"] > MAX_VALID_SPEED:
         return False, "Invalid speed_kph value"
 
     if payload["lane_id"] < 1:
@@ -66,7 +66,7 @@ def validate_data(payload):
     if payload["vehicle_type"] not in VEHICLE_TYPES:
         return False, "Unknown vehicle_type"
 
-    if payload["ocr_confidence"] <= MIN_OCR_CONFIDENCE:
+    if payload["ocr_confidence"] < MIN_OCR_CONFIDENCE:
         return False, "ocr_confidence is too low"
 
     if payload["ocr_confidence"] > 1.0:
