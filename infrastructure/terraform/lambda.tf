@@ -52,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "attach_custom_policy" {
 resource "aws_lambda_function" "ingestion_processor" {
   function_name = "UrbanFlowIngestionProcessor"
   role          = aws_iam_role.lambda_exec.arn
-  handler       = "ingestion_processor.lambda_handler"
+  handler       = "validator.lambda_handler"
   runtime       = "python3.13"
   timeout       = 30
 
@@ -62,7 +62,7 @@ resource "aws_lambda_function" "ingestion_processor" {
 
   environment {
     variables = {
-      TABLE_NAME = aws_dynamodb_table.traffic_data.name
+      AGGREGATION_FUNCTION_NAME = aws_lambda_function.data_aggregator.arn
     }
   }
 }
@@ -87,7 +87,39 @@ resource "aws_lambda_function" "data_reader" {
 
   environment {
     variables = {
-      AGGREGATED_DATA_TABLE_NAME = aws_dynamodb_table.traffic_data.name
+      AGGREGATED_DATA_TABLE_NAME = aws_dynamodb_table.aggregated_traffic_data.name
     }
   }
+}
+
+resource "aws_lambda_function" "data_aggregator" {
+  function_name = "UrbanFlowDataAggregator"
+  role          = aws_iam_role.lambda_exec.arn
+  handler       = "data_aggregator.lambda_handler"
+  runtime       = "python3.13"
+  timeout       = 20
+
+  # Localstack Hot-Reload
+  s3_bucket = "hot-reload"
+  s3_key    = "$${HOST_LAMBDA_DIR}"
+
+  environment {
+    variables = {
+      TABLE_NAME = aws_dynamodb_table.aggregated_traffic_data.name
+      CONGESTION_CALCULATION_ARN = aws_lambda_function.congestion_calculation.arn
+      RETENTION_DAYS = "30" #Data retention period
+    }
+  }
+}
+
+resource "aws_lambda_function" "congestion_calculation" {
+  function_name = "UrbanFlowCongestionCalculation"
+  role          = aws_iam_role.lambda_exec.arn
+  handler       = "congestion_calculation.lambda_handler"
+  runtime       = "python3.13"
+  timeout       = 10
+
+  # Localstack Hot-Reload
+  s3_bucket = "hot-reload"
+  s3_key    = "$${HOST_LAMBDA_DIR}"
 }
