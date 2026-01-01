@@ -62,7 +62,7 @@ resource "aws_lambda_function" "ingestion_processor" {
 
   environment {
     variables = {
-      AGGREGATION_FUNCTION_NAME = TODO
+      AGGREGATION_FUNCTION_NAME = aws_lambda_function.data_aggregator.arn
     }
   }
 }
@@ -87,7 +87,7 @@ resource "aws_lambda_function" "data_reader" {
 
   environment {
     variables = {
-      TABLE_NAME = aws_dynamodb_table.traffic_data.name
+      TABLE_NAME = aws_dynamodb_table.aggregated_traffic_data.name
     }
   }
 }
