@@ -52,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "attach_custom_policy" {
 resource "aws_lambda_function" "ingestion_processor" {
   function_name = "UrbanFlowIngestionProcessor"
   role          = aws_iam_role.lambda_exec.arn
-  handler       = "ingestion_processor.lambda_handler"
+  handler       = "validator.lambda_handler"
   runtime       = "python3.13"
   timeout       = 30
 
@@ -62,7 +62,7 @@ resource "aws_lambda_function" "ingestion_processor" {
 
   environment {
     variables = {
-      TABLE_NAME = aws_dynamodb_table.traffic_data.name
+      AGGREGATION_FUNCTION_NAME = aws_lambda_function.data_aggregator.arn
     }
   }
 }
@@ -87,7 +87,7 @@ resource "aws_lambda_function" "data_reader" {
 
   environment {
     variables = {
-      TABLE_NAME = aws_dynamodb_table.traffic_data.name
+      TABLE_NAME = aws_dynamodb_table.aggregated_traffic_data.name
     }
   }
 }
