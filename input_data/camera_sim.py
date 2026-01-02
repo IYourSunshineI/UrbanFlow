@@ -11,6 +11,10 @@ import sys
 SERVER_ENDPOINT = "http://host.docker.internal:5000/api/traffic-data"  # Use this when inside Docker
 ERROR_RATE = 0.05  # 5% chance of a sensor error
 
+# Traffic Jam Configuration
+JAM_PROBABILITY = 0.2   # 10% chance to start a traffic jam if traffic is normal
+JAM_DURATION_MIN = 5    # Minimum number of reports the jam lasts
+JAM_DURATION_MAX = 15   # Maximum number of reports the jam lasts
 
 def get_arguments():
     """Parses command line arguments."""
@@ -43,7 +47,7 @@ def generate_license_plate():
     return f"{city} {numbers}{letters}"
 
 
-def generate_vehicle_data(street_name, street_id, speed_limit, lanes, camera_position):
+def generate_vehicle_data(street_name, street_id, speed_limit, lanes, camera_position, is_traffic_jam):
     """
     Generates the vehicle data payload.
     Uses the user-provided speed_limit to determine violations.
@@ -62,6 +66,14 @@ def generate_vehicle_data(street_name, street_id, speed_limit, lanes, camera_pos
 
         # Errors usually have low OCR confidence due to blur/glitch
         ocr_confidence = round(random.uniform(0.10, 0.50), 2)
+
+    # 2. Simulate Traffic Jam (Velocity 0 or very slow)
+    elif is_traffic_jam:
+        # Speed is between 0 and 15% of the limit (e.g., 0-7.5 km/h in a 50 zone)
+        max_jam_speed = speed_limit * 0.15
+        current_speed = round(random.uniform(0.0, max_jam_speed), 1)
+        # Confidence is usually high in slow traffic
+        ocr_confidence = round(random.uniform(0.90, 0.99), 2)
 
     else:
         # Simulate speed: normal distribution around the limit - 5km/h
@@ -99,10 +111,26 @@ def main():
     print(f"Interval: {args.interval} seconds")
     print("Press CTRL+C to stop.\n")
 
+    # State variable to track persistent traffic jams
+    jam_remaining_cycles = 0
+
     while True:
         try:
+            # --- Traffic Jam State Machine ---
+            if jam_remaining_cycles > 0:
+                # We are currently in a jam
+                jam_remaining_cycles -= 1
+                is_jammed = True
+            else:
+                # We are in normal flow, check chance to start a jam
+                if random.random() < JAM_PROBABILITY:
+                    jam_remaining_cycles = random.randint(JAM_DURATION_MIN, JAM_DURATION_MAX)
+                    is_jammed = True
+                else:
+                    is_jammed = False
+
             # 2. Generate Data (passing the custom limit)
-            vehicle_data = generate_vehicle_data(args.name, args.id, args.limit, args.lanes, args.position)
+            vehicle_data = generate_vehicle_data(args.name, args.id, args.limit, args.lanes, args.position, is_jammed)
 
             # 3. Publish
             try:
@@ -129,6 +157,9 @@ def main():
             if vehicle_data['is_violation']:
                 # Print violations in RED
                 print(f"\033[91m{log_msg} [VIOLATION]\033[0m")
+            elif is_jammed:
+                # YELLOW for Traffic Jams (slow speed)
+                print(f"\033[93m{log_msg} [TRAFFIC JAM]\033[0m")
             else:
                 print(log_msg)
 
