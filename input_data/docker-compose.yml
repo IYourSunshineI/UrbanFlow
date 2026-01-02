@@ -1,0 +1,954 @@
+name: urban_flow_cameras
+version: '3.8'
+services:
+  cam_vie_001:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_001
+    restart: unless-stopped
+    extra_hosts: &id001
+    - host.docker.internal:host-gateway
+    command:
+    - --name
+    - "S\xFCdosttangente (A23)"
+    - --id
+    - VIE-001
+    - --interval
+    - '10.0'
+    - --limit
+    - '80'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_002:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_002
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Donauuferautobahn (A22)
+    - --id
+    - VIE-002
+    - --interval
+    - '10.0'
+    - --limit
+    - '80'
+    - --position
+    - '1'
+    - --lanes
+    - '3'
+  cam_vie_003:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_003
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Ostautobahn (A4)
+    - --id
+    - VIE-003
+    - --interval
+    - '10.0'
+    - --limit
+    - '80'
+    - --position
+    - '1'
+    - --lanes
+    - '3'
+  cam_vie_004:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_004
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Westautobahn (A1)
+    - --id
+    - VIE-004
+    - --interval
+    - '10.0'
+    - --limit
+    - '130'
+    - --position
+    - '1'
+    - --lanes
+    - '3'
+  cam_vie_005:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_005
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "S1 Wiener Au\xDFenring"
+    - --id
+    - VIE-005
+    - --interval
+    - '10.0'
+    - --limit
+    - '130'
+    - --position
+    - '1'
+    - --lanes
+    - '4'
+  cam_vie_006:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_006
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Triester Stra\xDFe"
+    - --id
+    - VIE-006
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_007:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_007
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Wagramer Stra\xDFe"
+    - --id
+    - VIE-007
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_008:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_008
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Prager Stra\xDFe"
+    - --id
+    - VIE-008
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_009:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_009
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Br\xFCnner Stra\xDFe"
+    - --id
+    - VIE-009
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_010:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_010
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "G\xFCrtel (Outer)"
+    - --id
+    - VIE-010
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '3'
+  cam_vie_011:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_011
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "G\xFCrtel (Inner)"
+    - --id
+    - VIE-011
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '3'
+  cam_vie_012:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_012
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Ringstra\xDFe"
+    - --id
+    - VIE-012
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_013:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_013
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Franz-Josefs-Kai
+    - --id
+    - VIE-013
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '3'
+  cam_vie_014:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_014
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Zweierlinie
+    - --id
+    - VIE-014
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_015:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_015
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Altmannsdorfer Stra\xDFe"
+    - --id
+    - VIE-015
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_016:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_016
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Gr\xFCnbergstra\xDFe"
+    - --id
+    - VIE-016
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_017:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_017
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Linke Wienzeile
+    - --id
+    - VIE-017
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_018:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_018
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Rechte Wienzeile
+    - --id
+    - VIE-018
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_019:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_019
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Handelskai
+    - --id
+    - VIE-019
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_020:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_020
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Donaustadtstra\xDFe"
+    - --id
+    - VIE-020
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_021:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_021
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Mariahilfer Stra\xDFe"
+    - --id
+    - VIE-021
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_022:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_022
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "K\xE4rntner Stra\xDFe"
+    - --id
+    - VIE-022
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_023:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_023
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Graben
+    - --id
+    - VIE-023
+    - --interval
+    - '10.0'
+    - --limit
+    - '30'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_024:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_024
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Rotenturmstra\xDFe"
+    - --id
+    - VIE-024
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_025:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_025
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Landstra\xDFer Hauptstra\xDFe"
+    - --id
+    - VIE-025
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_026:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_026
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Favoritenstra\xDFe"
+    - --id
+    - VIE-026
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_027:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_027
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Simmeringer Hauptstra\xDFe"
+    - --id
+    - VIE-027
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_028:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_028
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Thaliastra\xDFe"
+    - --id
+    - VIE-028
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_029:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_029
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Ottakringer Stra\xDFe"
+    - --id
+    - VIE-029
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_030:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_030
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Hernalser Hauptstra\xDFe"
+    - --id
+    - VIE-030
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_031:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_031
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "W\xE4hringer Stra\xDFe"
+    - --id
+    - VIE-031
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_032:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_032
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "D\xF6blinger Hauptstra\xDFe"
+    - --id
+    - VIE-032
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_033:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_033
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Heiligenst\xE4dter Stra\xDFe"
+    - --id
+    - VIE-033
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_034:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_034
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Nu\xDFdorfer Stra\xDFe"
+    - --id
+    - VIE-034
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_035:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_035
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Alser Stra\xDFe"
+    - --id
+    - VIE-035
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_036:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_036
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Josefst\xE4dter Stra\xDFe"
+    - --id
+    - VIE-036
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_037:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_037
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Burggasse
+    - --id
+    - VIE-037
+    - --interval
+    - '10.0'
+    - --limit
+    - '30'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_038:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_038
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Neustiftgasse
+    - --id
+    - VIE-038
+    - --interval
+    - '10.0'
+    - --limit
+    - '30'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_039:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_039
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Lerchenfelder Stra\xDFe"
+    - --id
+    - VIE-039
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_040:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_040
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Gumpendorfer Stra\xDFe"
+    - --id
+    - VIE-040
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_041:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_041
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Margaretenstra\xDFe"
+    - --id
+    - VIE-041
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_042:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_042
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Wiedner Hauptstra\xDFe"
+    - --id
+    - VIE-042
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_043:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_043
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Ungargasse
+    - --id
+    - VIE-043
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_044:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_044
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - Rennweg
+    - --id
+    - VIE-044
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_045:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_045
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Praterstra\xDFe"
+    - --id
+    - VIE-045
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_046:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_046
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Taborstra\xDFe"
+    - --id
+    - VIE-046
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_047:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_047
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Wallensteinstra\xDFe"
+    - --id
+    - VIE-047
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_048:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_048
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "J\xE4gerstra\xDFe"
+    - --id
+    - VIE-048
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '2'
+  cam_vie_049:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_049
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Dresdner Stra\xDFe"
+    - --id
+    - VIE-049
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
+  cam_vie_050:
+    build: .
+    image: speed-camera-sim
+    container_name: cam_vie_050
+    restart: unless-stopped
+    extra_hosts: *id001
+    command:
+    - --name
+    - "Engerthstra\xDFe"
+    - --id
+    - VIE-050
+    - --interval
+    - '10.0'
+    - --limit
+    - '50'
+    - --position
+    - '1'
+    - --lanes
+    - '1'
