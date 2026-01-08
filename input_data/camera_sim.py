@@ -5,10 +5,14 @@ import string
 import requests
 import argparse
 import sys
+import json
+import base64
 
 # Configuration
 # SERVER_ENDPOINT = "http://localhost:5000/api/traffic-data"
-SERVER_ENDPOINT = "http://host.docker.internal:5000/api/traffic-data"  # Use this when inside Docker
+#SERVER_ENDPOINT = "http://host.docker.internal:5000/api/traffic-data"  # Use this when inside Docker
+SERVER_ENDPOINT = "http://host.docker.internal:4566"  # LocalStack
+STREAM_NAME = "urbanflow-input-stream"
 ERROR_RATE = 0.05  # 5% chance of a sensor error
 
 # Traffic Jam Configuration
@@ -53,7 +57,7 @@ def generate_vehicle_data(street_name, street_id, speed_limit, lanes, camera_pos
     Uses the user-provided speed_limit to determine violations.
     """
 
-    # Determine if we should simulate a sensor glitch (5% chance)
+    # 1. Determine if we should simulate a sensor glitch (5% chance)
     if random.random() < ERROR_RATE:
         is_error = True
         # 50/50 chance between negative speed or impossible speed
@@ -131,12 +135,26 @@ def main():
 
             # 2. Generate Data (passing the custom limit)
             vehicle_data = generate_vehicle_data(args.name, args.id, args.limit, args.lanes, args.position, is_jammed)
+            json_payload = json.dumps(vehicle_data)
+            b64_payload = base64.b64encode(json_payload.encode('utf-8')).decode('utf-8')
+
+            kinesis_payload = {
+                "StreamName": STREAM_NAME,
+                "PartitionKey": args.id,
+                "Data": b64_payload
+            }
+
+            headers = {
+                "Content-Type": "application/x-amz-json-1.1",
+                "X-Amz-Target": "Kinesis_20131202.PutRecord"
+            }
 
             # 3. Publish
             try:
                 response = requests.post(
                     SERVER_ENDPOINT,
-                    json=vehicle_data,
+                    json=kinesis_payload,
+                    headers=headers,
                     timeout=1
                 )
                 status = f"Sent ({response.status_code})"
