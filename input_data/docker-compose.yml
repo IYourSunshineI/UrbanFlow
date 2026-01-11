@@ -2,7 +2,6 @@ name: urban_flow_cameras
 version: '3.8'
 services:
   cam_vie_001:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_001
     restart: unless-stopped
@@ -21,8 +20,8 @@ services:
     - '1'
     - --lanes
     - '2'
-  cam_vie_002:
     build: .
+  cam_vie_002:
     image: speed-camera-sim
     container_name: cam_vie_002
     restart: unless-stopped
@@ -41,7 +40,6 @@ services:
     - --lanes
     - '3'
   cam_vie_003:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_003
     restart: unless-stopped
@@ -60,7 +58,6 @@ services:
     - --lanes
     - '3'
   cam_vie_004:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_004
     restart: unless-stopped
@@ -79,7 +76,6 @@ services:
     - --lanes
     - '3'
   cam_vie_005:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_005
     restart: unless-stopped
@@ -98,7 +94,6 @@ services:
     - --lanes
     - '4'
   cam_vie_006:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_006
     restart: unless-stopped
@@ -117,7 +112,6 @@ services:
     - --lanes
     - '2'
   cam_vie_007:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_007
     restart: unless-stopped
@@ -136,7 +130,6 @@ services:
     - --lanes
     - '2'
   cam_vie_008:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_008
     restart: unless-stopped
@@ -155,7 +148,6 @@ services:
     - --lanes
     - '1'
   cam_vie_009:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_009
     restart: unless-stopped
@@ -174,7 +166,6 @@ services:
     - --lanes
     - '1'
   cam_vie_010:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_010
     restart: unless-stopped
@@ -193,7 +184,6 @@ services:
     - --lanes
     - '3'
   cam_vie_011:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_011
     restart: unless-stopped
@@ -212,7 +202,6 @@ services:
     - --lanes
     - '3'
   cam_vie_012:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_012
     restart: unless-stopped
@@ -231,7 +220,6 @@ services:
     - --lanes
     - '1'
   cam_vie_013:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_013
     restart: unless-stopped
@@ -250,7 +238,6 @@ services:
     - --lanes
     - '3'
   cam_vie_014:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_014
     restart: unless-stopped
@@ -269,7 +256,6 @@ services:
     - --lanes
     - '2'
   cam_vie_015:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_015
     restart: unless-stopped
@@ -288,7 +274,6 @@ services:
     - --lanes
     - '1'
   cam_vie_016:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_016
     restart: unless-stopped
@@ -307,7 +292,6 @@ services:
     - --lanes
     - '1'
   cam_vie_017:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_017
     restart: unless-stopped
@@ -326,7 +310,6 @@ services:
     - --lanes
     - '1'
   cam_vie_018:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_018
     restart: unless-stopped
@@ -345,7 +328,6 @@ services:
     - --lanes
     - '2'
   cam_vie_019:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_019
     restart: unless-stopped
@@ -364,7 +346,6 @@ services:
     - --lanes
     - '2'
   cam_vie_020:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_020
     restart: unless-stopped
@@ -383,7 +364,6 @@ services:
     - --lanes
     - '2'
   cam_vie_021:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_021
     restart: unless-stopped
@@ -402,7 +382,6 @@ services:
     - --lanes
     - '1'
   cam_vie_022:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_022
     restart: unless-stopped
@@ -421,7 +400,6 @@ services:
     - --lanes
     - '1'
   cam_vie_023:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_023
     restart: unless-stopped
@@ -440,7 +418,6 @@ services:
     - --lanes
     - '1'
   cam_vie_024:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_024
     restart: unless-stopped
@@ -459,7 +436,6 @@ services:
     - --lanes
     - '2'
   cam_vie_025:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_025
     restart: unless-stopped
@@ -478,7 +454,6 @@ services:
     - --lanes
     - '1'
   cam_vie_026:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_026
     restart: unless-stopped
@@ -497,7 +472,6 @@ services:
     - --lanes
     - '1'
   cam_vie_027:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_027
     restart: unless-stopped
@@ -516,7 +490,6 @@ services:
     - --lanes
     - '1'
   cam_vie_028:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_028
     restart: unless-stopped
@@ -535,7 +508,6 @@ services:
     - --lanes
     - '1'
   cam_vie_029:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_029
     restart: unless-stopped
@@ -554,7 +526,6 @@ services:
     - --lanes
     - '2'
   cam_vie_030:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_030
     restart: unless-stopped
@@ -573,7 +544,6 @@ services:
     - --lanes
     - '2'
   cam_vie_031:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_031
     restart: unless-stopped
@@ -592,7 +562,6 @@ services:
     - --lanes
     - '1'
   cam_vie_032:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_032
     restart: unless-stopped
@@ -611,7 +580,6 @@ services:
     - --lanes
     - '1'
   cam_vie_033:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_033
     restart: unless-stopped
@@ -630,7 +598,6 @@ services:
     - --lanes
     - '2'
   cam_vie_034:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_034
     restart: unless-stopped
@@ -649,7 +616,6 @@ services:
     - --lanes
     - '2'
   cam_vie_035:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_035
     restart: unless-stopped
@@ -668,7 +634,6 @@ services:
     - --lanes
     - '1'
   cam_vie_036:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_036
     restart: unless-stopped
@@ -687,7 +652,6 @@ services:
     - --lanes
     - '2'
   cam_vie_037:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_037
     restart: unless-stopped
@@ -706,7 +670,6 @@ services:
     - --lanes
     - '1'
   cam_vie_038:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_038
     restart: unless-stopped
@@ -725,7 +688,6 @@ services:
     - --lanes
     - '1'
   cam_vie_039:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_039
     restart: unless-stopped
@@ -744,7 +706,6 @@ services:
     - --lanes
     - '2'
   cam_vie_040:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_040
     restart: unless-stopped
@@ -763,7 +724,6 @@ services:
     - --lanes
     - '2'
   cam_vie_041:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_041
     restart: unless-stopped
@@ -782,7 +742,6 @@ services:
     - --lanes
     - '2'
   cam_vie_042:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_042
     restart: unless-stopped
@@ -801,7 +760,6 @@ services:
     - --lanes
     - '1'
   cam_vie_043:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_043
     restart: unless-stopped
@@ -820,7 +778,6 @@ services:
     - --lanes
     - '1'
   cam_vie_044:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_044
     restart: unless-stopped
@@ -839,7 +796,6 @@ services:
     - --lanes
     - '1'
   cam_vie_045:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_045
     restart: unless-stopped
@@ -858,7 +814,6 @@ services:
     - --lanes
     - '1'
   cam_vie_046:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_046
     restart: unless-stopped
@@ -877,7 +832,6 @@ services:
     - --lanes
     - '2'
   cam_vie_047:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_047
     restart: unless-stopped
@@ -896,7 +850,6 @@ services:
     - --lanes
     - '1'
   cam_vie_048:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_048
     restart: unless-stopped
@@ -915,7 +868,6 @@ services:
     - --lanes
     - '2'
   cam_vie_049:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_049
     restart: unless-stopped
@@ -934,7 +886,6 @@ services:
     - --lanes
     - '1'
   cam_vie_050:
-    build: .
     image: speed-camera-sim
     container_name: cam_vie_050
     restart: unless-stopped
