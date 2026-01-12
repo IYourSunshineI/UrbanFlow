@@ -22,6 +22,8 @@ FIELDS = {
     "vehicle_type": str,
     "ocr_confidence": (int, float),
     "is_violation": bool,
+    "latitude": (int, float),
+    "longitude": (int, float),
 }
 
 VEHICLE_TYPES = ["Car", "Car", "Car", "Truck", "Motorcycle", "Bus"]
@@ -71,6 +73,12 @@ def validate_data(payload):
 
     if payload["ocr_confidence"] > 1.0:
         return False, "ocr_confidence cannot be greater than 1.0"
+
+    if payload["latitude"] < -90 or payload["latitude"] > 90:
+        return False, "latitude must be between -90 and 90"
+
+    if payload["longitude"] < -180 or payload["longitude"] > 180:
+        return False, "longitude must be between -180 and 180"
 
     return True, None
 
