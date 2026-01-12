@@ -29,6 +29,8 @@ def generate_compose_file():
             street_id = row['street_id']
             speed_limit = row['speed_limit_kph']
             lanes = row['lanes']
+            latitude = row['latitude']
+            longitude = row['longitude']
 
             # Create a clean service name (e.g., cam_vie_001)
             service_name = f"cam_{street_id.lower().replace('-', '_')}"
@@ -46,7 +48,9 @@ def generate_compose_file():
                     "--interval", "10.0",  # Slower interval to save resources
                     "--limit", speed_limit,
                     "--position", "1",  # Single camera at position 1 (can be changed when adding average speed)
-                    "--lanes", lanes
+                    "--lanes", lanes,
+                    "--latitude", latitude,
+                    "--longitude", longitude
                 ]
             }
 
