@@ -23,18 +23,20 @@ def generate_compose_file():
     with open(CSV_FILE, mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
 
+        first_service = True
         for row in reader:
             street_name = row['street_name']
             street_id = row['street_id']
             speed_limit = row['speed_limit_kph']
             lanes = row['lanes']
+            latitude = row['latitude']
+            longitude = row['longitude']
 
             # Create a clean service name (e.g., cam_vie_001)
             service_name = f"cam_{street_id.lower().replace('-', '_')}"
 
             # Define the service for this specific camera
             service = {
-                "build": ".",  # Build from the Dockerfile in current dir
                 "image": IMAGE_NAME,
                 "container_name": service_name,
                 "restart": "unless-stopped",
@@ -46,9 +48,16 @@ def generate_compose_file():
                     "--interval", "10.0",  # Slower interval to save resources
                     "--limit", speed_limit,
                     "--position", "1",  # Single camera at position 1 (can be changed when adding average speed)
-                    "--lanes", lanes
+                    "--lanes", lanes,
+                    "--latitude", latitude,
+                    "--longitude", longitude
                 ]
             }
+
+            # Only define build in the first service to prevent concurrent build failures
+            if first_service:
+                service["build"] = "."
+                first_service = False
 
             # Add to the services dictionary
             compose_data["services"][service_name] = service

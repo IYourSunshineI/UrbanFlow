@@ -1,51 +1,50 @@
-street_name,street_id,speed_limit_kph,lanes
-Südosttangente (A23),VIE-001,80,2
-Donauuferautobahn (A22),VIE-002,80,3
-Ostautobahn (A4),VIE-003,80,3
-Westautobahn (A1),VIE-004,130,3
-S1 Wiener Außenring,VIE-005,130,4
-Triester Straße,VIE-006,50,2
-Wagramer Straße,VIE-007,50,2
-Prager Straße,VIE-008,50,1
-Brünner Straße,VIE-009,50,1
-Gürtel (Outer),VIE-010,50,3
-Gürtel (Inner),VIE-011,50,3
-Ringstraße,VIE-012,50,1
-Franz-Josefs-Kai,VIE-013,50,3
-Zweierlinie,VIE-014,50,2
-Altmannsdorfer Straße,VIE-015,50,1
-Grünbergstraße,VIE-016,50,1
-Linke Wienzeile,VIE-017,50,1
-Rechte Wienzeile,VIE-018,50,2
-Handelskai,VIE-019,50,2
-Donaustadtstraße,VIE-020,50,2
-Mariahilfer Straße,VIE-021,50,1
-Kärntner Straße,VIE-022,50,1
-Graben,VIE-023,30,1
-Rotenturmstraße,VIE-024,50,2
-Landstraßer Hauptstraße,VIE-025,50,1
-Favoritenstraße,VIE-026,50,1
-Simmeringer Hauptstraße,VIE-027,50,1
-Thaliastraße,VIE-028,50,1
-Ottakringer Straße,VIE-029,50,2
-Hernalser Hauptstraße,VIE-030,50,2
-Währinger Straße,VIE-031,50,1
-Döblinger Hauptstraße,VIE-032,50,1
-Heiligenstädter Straße,VIE-033,50,2
-Nußdorfer Straße,VIE-034,50,2
-Alser Straße,VIE-035,50,1
-Josefstädter Straße,VIE-036,50,2
-Burggasse,VIE-037,30,1
-Neustiftgasse,VIE-038,30,1
-Lerchenfelder Straße,VIE-039,50,2
-Gumpendorfer Straße,VIE-040,50,2
-Margaretenstraße,VIE-041,50,2
-Wiedner Hauptstraße,VIE-042,50,1
-Ungargasse,VIE-043,50,1
-Rennweg,VIE-044,50,1
-Praterstraße,VIE-045,50,1
-Taborstraße,VIE-046,50,2
-Wallensteinstraße,VIE-047,50,1
-Jägerstraße,VIE-048,50,2
-Dresdner Straße,VIE-049,50,1
-Engerthstraße,VIE-050,50,1
+street_name,street_id,speed_limit_kph,lanes,latitude,longitude
+Südosttangente (A23),VIE-001,80,2,48.193010199999996,16.416310799999998
+Donauuferautobahn (A22),VIE-002,80,2,48.2511784,16.372324499999998
+Ostautobahn (A4),VIE-003,80,2,48.1806906,16.451268
+Westautobahn (A1),VIE-004,130,3,48.2033901,16.2173247
+S1 Wiener Außenring,VIE-005,130,3,48.1251319,16.398042999999998
+Triester Straße,VIE-006,50,2,48.1423602,16.3298931
+Wagramer Straße,VIE-007,50,1,48.2726164,16.4695428
+Prager Straße,VIE-008,50,2,48.285799,16.3840888
+Brünner Straße,VIE-009,50,1,48.3065053,16.425827599999998
+Gürtel,VIE-010,50,3,48.2363472,16.3616113
+Schottenring,VIE-011,50,2,48.214481899999996,16.3636321
+Franz-Josefs-Kai,VIE-012,50,3,48.2162794,16.3726104
+Obere Donaustraße,VIE-013,50,1,48.218365399999996,16.3725798
+Altmannsdorfer Straße,VIE-014,50,1,48.1685071,16.3157928
+Grünbergstraße,VIE-015,50,1,48.178978699999995,16.316680299999998
+Linke Wienzeile,VIE-016,50,1,48.1876296,16.337139
+Rechte Wienzeile,VIE-017,50,1,48.198788699999994,16.364421399999998
+Handelskai,VIE-018,50,2,48.2320201,16.3970081
+Donaustadtstraße,VIE-019,50,1,48.238087799999995,16.4402105
+Mariahilfer Straße,VIE-020,50,1,48.1998864,16.354417599999998
+Kärntner Straße,VIE-021,50,2,48.206005,16.3713883
+Graben,VIE-022,30,1,48.2083656,16.370203699999998
+Rotenturmstraße,VIE-023,50,2,48.2103007,16.374451
+Landstraßer Hauptstraße,VIE-024,50,1,48.1866531,16.3971817
+Favoritenstraße,VIE-025,50,2,48.187708799999996,16.3732872
+Simmeringer Hauptstraße,VIE-026,50,1,48.1607205,16.4307348
+Thaliastraße,VIE-027,50,2,48.212064899999994,16.315657299999998
+Ottakringer Straße,VIE-028,50,2,48.2140947,16.3308238
+Hernalser Hauptstraße,VIE-029,50,2,48.224751499999996,16.312213
+Währinger Straße,VIE-030,50,2,48.2254936,16.3470135
+Döblinger Hauptstraße,VIE-031,50,2,48.237327,16.353954899999998
+Heiligenstädter Straße,VIE-032,50,1,48.2678838,16.3631948
+Nußdorfer Straße,VIE-033,50,1,48.2282398,16.3547419
+Alser Straße,VIE-034,50,2,48.2148411,16.3523851
+Josefstädter Straße,VIE-035,50,2,48.2098988,16.3472604
+Burggasse,VIE-036,30,1,48.2048123,16.3574435
+Neustiftgasse,VIE-037,30,1,48.205501299999995,16.3481958
+Lerchenfelder Straße,VIE-038,50,1,48.207991299999996,16.3413812
+Gumpendorfer Straße,VIE-039,50,1,48.1933742,16.3493717
+Margaretenstraße,VIE-040,50,2,48.188998899999994,16.354637999999998
+Wiedner Hauptstraße,VIE-041,50,1,48.182420699999994,16.3593845
+Ungargasse,VIE-042,50,1,48.2038106,16.385464499999998
+Rennweg,VIE-043,50,1,48.1906307,16.39705
+Praterstraße,VIE-044,50,1,48.2169445,16.3885392
+Taborstraße,VIE-045,50,2,48.229406399999995,16.394228
+Wallensteinstraße,VIE-046,50,1,48.229073299999996,16.3691091
+Jägerstraße,VIE-047,50,1,48.238530399999995,16.370884
+Dresdner Straße,VIE-048,50,2,48.2372439,16.3801081
+Engerthstraße,VIE-049,50,1,48.2393996,16.385704999999998

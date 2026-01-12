@@ -38,6 +38,10 @@ def get_arguments():
                              "measured then the street can have more cameras (default: 1)")
     parser.add_argument("-r", "--lanes", type=int, default=1,
                         help="The number of lanes the street has (default: 1)")
+    parser.add_argument("-q", "--latitude", type=float, default=1,
+                        help="The latitude of the camera (default: 1)")
+    parser.add_argument("-w", "--longitude", type=float, default=1,
+                        help="The longitude of the camera (default: 1)")
 
     return parser.parse_args()
 
@@ -51,7 +55,7 @@ def generate_license_plate():
     return f"{city} {numbers}{letters}"
 
 
-def generate_vehicle_data(street_name, street_id, speed_limit, lanes, camera_position, is_traffic_jam):
+def generate_vehicle_data(street_name, street_id, speed_limit, lanes, camera_position,latitude, longitude, is_traffic_jam):
     """
     Generates the vehicle data payload.
     Uses the user-provided speed_limit to determine violations.
@@ -91,6 +95,8 @@ def generate_vehicle_data(street_name, street_id, speed_limit, lanes, camera_pos
         "street_name": street_name,
         "street_id": street_id,
         "camera_id": f"CAM-{street_id}-{camera_position:02d}",
+        "latitude": latitude,
+        "longitude": longitude,
         "timestamp": datetime.datetime.now().isoformat(),
         "license_plate": generate_license_plate(),
         "speed_kph": current_speed,
@@ -113,6 +119,8 @@ def main():
     print(f"Speed Limit: {args.limit} km/h")
     print(f"Target: {SERVER_ENDPOINT}")
     print(f"Interval: {args.interval} seconds")
+    print(f"Latitude: {args.latitude}")
+    print(f"Longitude: {args.longitude}")
     print("Press CTRL+C to stop.\n")
 
     # State variable to track persistent traffic jams
@@ -134,7 +142,7 @@ def main():
                     is_jammed = False
 
             # 2. Generate Data (passing the custom limit)
-            vehicle_data = generate_vehicle_data(args.name, args.id, args.limit, args.lanes, args.position, is_jammed)
+            vehicle_data = generate_vehicle_data(args.name, args.id, args.limit, args.lanes, args.position, args.latitude, args.longitude, is_jammed)
             json_payload = json.dumps(vehicle_data)
             b64_payload = base64.b64encode(json_payload.encode('utf-8')).decode('utf-8')
 
