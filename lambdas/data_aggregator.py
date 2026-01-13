@@ -16,41 +16,6 @@ CALCULATION_ARN = os.environ.get('CONGESTION_CALCULATION_ARN')
 RETENTION_DAYS = int(os.environ.get('RETENTION_DAYS', '30'))
 RETENTION_SECONDS = RETENTION_DAYS * 24 * 60 * 60
 
-""" TODO: delete on integration with validation lambda
-
-def lambda_handler(event, context):
-    """
-    #Triggered by Kinesis Data Streams.
-    #Aggregates incoming batches of vehicle detections to compute average speed per street.
-"""
-    data_points = parse_kinesis_records(event['Records'])
-
-    if not data_points:
-        print("No valid data points found.")
-        return {'statusCode': 400, 'message': 'No valid data points'}
-
-    street_stats = aggregate_metrics(data_points)
-    timestamp = datetime.now().isoformat()
-    persist_aggregated_data(street_stats, timestamp)
-
-    return {'statusCode': 200, 'message': 'Data aggregated and persisted'}
-
-def parse_kinesis_records(records):
-    """
-    #Helper function to parse Kinesis records.
-"""
-    parsed_records = []
-    for record in records:
-        try:
-            payload = base64.b64decode(record['kinesis']['data']).decode('utf-8')
-            data = json.loads(payload)
-            parsed_records.append(data)
-        except Exception as e:
-            print(f"Error decoding record: {e}")
-            continue
-    return parsed_records
-"""
-
 def lambda_handler(event, context):
     """
     Triggered by Validation Lambda.
@@ -83,6 +48,8 @@ def aggregate_metrics(data_points):
         limit = data.get('speed_limit', 0)
         s_name = data.get('street_name', 'Unknown')
         license_plate = data.get('license_plate', 'Unknown')
+        lat = data.get('latitude', 0)
+        lng = data.get('longitude', 0)
 
         if s_id not in stats:
             stats[s_id] = {
@@ -90,7 +57,9 @@ def aggregate_metrics(data_points):
                 'total_speed': 0,
                 'vehicle_count': 0,
                 'speed_limit': limit,
-                'license_plates': set()
+                'license_plates': set(),
+                'latitude': lat,
+                'longitude': lng
             }
         stats[s_id]['total_speed'] += speed
         if license_plate not in stats[s_id]['license_plates']:
@@ -146,7 +115,9 @@ def persist_aggregated_data(street_stats, timestamp):
                 'vehicle_count': stats['vehicle_count'],
                 'congestion_index': Decimal(str(round(congestion_index, 4))),
                 'timestamp_utc': timestamp,
-                'expiration_timestamp': expiration_timestamp
+                'expiration_timestamp': expiration_timestamp,
+                'latitude': stats['latitude'],
+                'longitude': stats['longitude']
             }
             batch.put_item(Item=item)
 
