@@ -111,8 +111,8 @@ def persist_aggregated_data(street_stats, timestamp):
                 'vehicle_count': stats['vehicle_count'],
                 'congestion_index': Decimal(str(round(congestion_index, 4))),
                 'timestamp_utc': timestamp,
-                'latitude': stats['latitude'],
-                'longitude': stats['longitude']
+                'latitude': Decimal(str(stats['latitude'])),
+                'longitude': Decimal(str(stats['longitude']))
             }
             batch.put_item(Item=item)
 
