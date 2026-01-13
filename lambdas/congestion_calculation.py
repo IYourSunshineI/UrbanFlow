@@ -8,7 +8,9 @@ def calculate_congestion_index(speed_limit, avg_speed):
     if avg_speed <= 0:
         return 999.0 # stopped traffic
 
-    return (speed_limit - avg_speed) / avg_speed
+    ci = (speed_limit - avg_speed) / avg_speed
+    print(f"Calculating congestion index: {ci}")
+    return ci
 
 def lambda_handler(event, context):
     """
