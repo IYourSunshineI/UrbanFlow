@@ -107,7 +107,6 @@ resource "aws_lambda_function" "data_aggregator" {
     variables = {
       TABLE_NAME = aws_dynamodb_table.aggregated_traffic_data.name
       CONGESTION_CALCULATION_ARN = aws_lambda_function.congestion_calculation.arn
-      RETENTION_DAYS = "30" #Data retention period
     }
   }
 }

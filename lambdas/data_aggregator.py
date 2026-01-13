@@ -13,9 +13,6 @@ table = dynamodb.Table(TABLE_NAME)
 lambda_client = boto3.client('lambda')
 CALCULATION_ARN = os.environ.get('CONGESTION_CALCULATION_ARN')
 
-RETENTION_DAYS = int(os.environ.get('RETENTION_DAYS', '30'))
-RETENTION_SECONDS = RETENTION_DAYS * 24 * 60 * 60
-
 def lambda_handler(event, context):
     """
     Triggered by Validation Lambda.
@@ -99,7 +96,6 @@ def persist_aggregated_data(street_stats, timestamp):
     """
     Persist aggregated data to DynamoDB.
     """
-    expiration_timestamp = int(time.time()) + RETENTION_SECONDS
 
     with table.batch_writer() as batch:
         for s_id, stats in street_stats.items():
@@ -115,7 +111,6 @@ def persist_aggregated_data(street_stats, timestamp):
                 'vehicle_count': stats['vehicle_count'],
                 'congestion_index': Decimal(str(round(congestion_index, 4))),
                 'timestamp_utc': timestamp,
-                'expiration_timestamp': expiration_timestamp,
                 'latitude': stats['latitude'],
                 'longitude': stats['longitude']
             }
