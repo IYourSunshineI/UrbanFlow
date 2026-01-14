@@ -9,6 +9,7 @@ def calculate_congestion_index(speed_limit, avg_speed):
         return 999.0 # stopped traffic
 
     ci = (speed_limit - avg_speed) / avg_speed
+    ci = max(0.0, ci)
     print(f"Calculating congestion index: {ci}")
     return ci
 
