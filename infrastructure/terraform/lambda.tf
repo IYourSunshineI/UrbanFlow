@@ -88,6 +88,7 @@ resource "aws_lambda_function" "data_reader" {
   environment {
     variables = {
       AGGREGATED_DATA_TABLE_NAME = aws_dynamodb_table.aggregated_traffic_data.name
+      ALERTS_TABLE_NAME          = aws_dynamodb_table.alerts.name
     }
   }
 }
@@ -121,4 +122,29 @@ resource "aws_lambda_function" "congestion_calculation" {
   # Localstack Hot-Reload
   s3_bucket = "hot-reload"
   s3_key    = "$${HOST_LAMBDA_DIR}"
+}
+
+resource "aws_lambda_function" "anomaly_detector" {
+  function_name = "UrbanFlowAnomalyDetector"
+  role          = aws_iam_role.lambda_exec.arn
+  handler       = "anomaly_detector.lambda_handler"
+  runtime       = "python3.13"
+  timeout       = 10
+
+  # Localstack Hot-Reload
+  s3_bucket = "hot-reload"
+  s3_key    = "$${HOST_LAMBDA_DIR}"
+
+  environment {
+    variables = {
+      ALERTS_TABLE_NAME = aws_dynamodb_table.alerts.name
+    }
+  }
+}
+
+resource "aws_lambda_event_source_mapping" "anomaly_detector_kinesis" {
+  event_source_arn  = aws_kinesis_stream.urbanflow_input_stream.arn
+  function_name     = aws_lambda_function.anomaly_detector.arn
+  starting_position = "LATEST"
+  batch_size        = var.lambda_batch_size
 }

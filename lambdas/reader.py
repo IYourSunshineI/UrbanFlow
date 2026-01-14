@@ -2,10 +2,14 @@ import json
 import os
 import boto3
 from decimal import Decimal
+from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
 TABLE_NAME = os.getenv("AGGREGATED_DATA_TABLE_NAME")
+ALERTS_TABLE_NAME = os.getenv("ALERTS_TABLE_NAME")
+
 table = dynamodb.Table(TABLE_NAME)
+alerts_table = dynamodb.Table(ALERTS_TABLE_NAME) if ALERTS_TABLE_NAME else None
 
 
 def decimal_to_float(val):
@@ -39,40 +43,83 @@ def lambda_handler(event, context):
             "body": ""
         }
 
+    resource = event.get("resource")
+    
+    try:
+        # Route: GET /alerts
+        if resource == "/alerts":
+            return handle_get_alerts(event)
+
+        # Route: GET /traffic
+        return handle_get_traffic(event)
+
+    except Exception as e:
+        print(e)
+        return {
+            "statusCode": 500,
+            "headers": CORS_HEADERS,
+            "body": json.dumps({"error": str(e)})
+        }
+
+
+def handle_get_alerts(event):
+    if not alerts_table:
+        return {
+            "statusCode": 500,
+            "headers": CORS_HEADERS,
+            "body": json.dumps({"error": "Alerts table not configured"})
+        }
+    
     params = event.get("queryStringParameters") or {}
     street_id = params.get("street_id")
 
-    try:
-        # If no street_id provided, return all streets' latest data
-        if not street_id:
-            data = get_all_latest_data()
-            return {
-                "statusCode": 200,
-                "headers": CORS_HEADERS,
-                "body": json.dumps(data, default=decimal_to_float)
-            }
+    # If street_id is provided, filtering is needed. 
+    # Ideally use a GSI (Index: sensor_id-timestamp-index), but for legacy reasons/simplicity if table is small scan + filter works.
+    # Given the requirements, we'll scan and filter in memory for now as the table has TTL and won't be huge.
+    
+    response = alerts_table.scan()
+    items = response.get("Items", [])
+    
+    if street_id:
+        items = [i for i in items if i.get('sensor_id') == street_id]
 
-        # Single street lookup
-        if not street_id_exists(street_id):
-            return {
-                "statusCode": 404,
-                "headers": CORS_HEADERS,
-                "body": json.dumps({"error": "street_id not found"})
-            }
+    # Sort by timestamp descending
+    items.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
 
-        data = get_latest_data_for_street(street_id)
+    return {
+        "statusCode": 200,
+        "headers": CORS_HEADERS,
+        "body": json.dumps(items, default=decimal_to_float)
+    }
+
+
+def handle_get_traffic(event):
+    params = event.get("queryStringParameters") or {}
+    street_id = params.get("street_id")
+
+    # If no street_id provided, return all streets' latest data
+    if not street_id:
+        data = get_all_latest_data()
         return {
             "statusCode": 200,
             "headers": CORS_HEADERS,
             "body": json.dumps(data, default=decimal_to_float)
         }
 
-    except Exception as e:
+    # Single street lookup
+    if not street_id_exists(street_id):
         return {
-            "statusCode": 500,
+            "statusCode": 404,
             "headers": CORS_HEADERS,
-            "body": json.dumps({"error": str(e)})
+            "body": json.dumps({"error": "street_id not found"})
         }
+
+    data = get_latest_data_for_street(street_id)
+    return {
+        "statusCode": 200,
+        "headers": CORS_HEADERS,
+        "body": json.dumps(data, default=decimal_to_float)
+    }
 
 
 def get_latest_data_for_street(street_id):

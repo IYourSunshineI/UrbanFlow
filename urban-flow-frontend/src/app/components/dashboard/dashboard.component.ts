@@ -1,9 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Important for ngClass etc
 import { FormsModule } from '@angular/forms'; // For input binding if using ngModel
 
 import { MapComponent } from '../map/map.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AlertService } from '../../services/alert.service'; // Added
+import { Subscription } from 'rxjs'; // Added
 
 @Component({
   selector: 'app-dashboard',
@@ -12,11 +14,28 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild(MapComponent) mapComponent!: MapComponent;
   
   selectedSensorId: string | null = null;
   searchTerm: string = '';
+  private alertSub: Subscription | undefined;
+
+  constructor(private alertService: AlertService) {} // Inject
+
+  ngOnInit(): void {
+      this.alertSub = this.alertService.alertSelected$.subscribe(alert => {
+          if (alert.sensor_id) {
+              this.onSensorSelected(alert.sensor_id);
+              // Wait for map to be ready or just call it (ViewChild should be populated)
+              this.mapComponent.flyToSensor(alert.sensor_id);
+          }
+      });
+  }
+
+  ngOnDestroy(): void {
+      if (this.alertSub) this.alertSub.unsubscribe();
+  }
   
   // Status Filters
   filterStatuses: { id: string, label: string, active: boolean, color: string }[] = [

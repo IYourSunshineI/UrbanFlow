@@ -173,4 +173,21 @@ export class MapComponent implements OnInit, OnDestroy {
       iconAnchor: [12, 12]
     });
   }
+
+
+  flyToSensor(sensorId: string): void {
+      const marker = this.markers.get(sensorId);
+      if (marker && this.map) {
+          // Open Sidebar logic is handled by Dashboard, map just zooms
+          this.map.flyTo(marker.getLatLng(), 15, {
+              animate: true,
+              duration: 1.5
+          });
+          
+          // Optional: Open popup or highlight
+          // marker.openPopup(); 
+      } else {
+          console.warn(`Marker for sensor ${sensorId} not found in map.`);
+      }
+  }
 }

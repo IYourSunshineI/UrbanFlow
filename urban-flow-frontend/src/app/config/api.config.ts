@@ -20,6 +20,9 @@ export const environment = {
 
   // Polling interval in milliseconds (how often to fetch new data)
   pollingIntervalMs: 5000,
+
+  // WebSocket URL (Update after terraform apply)
+  websocketUrl: 'wss://placeholder-url', 
 };
 
 /**

@@ -1,0 +1,14 @@
+<div *ngIf="currentAlert" class="alert-banner">
+  <div class="alert-content">
+    <span class="icon">⚠️</span>
+    <div class="message">
+      <strong>ACHTUNG: GEISTERFAHRER!</strong>
+      <p>Street: {{ currentAlert.street_name }}</p>
+      <p>Plate: {{ currentAlert.details?.license_plate }}</p>
+    </div>
+    <div class="actions">
+      <button (click)="zoomToLocation()" class="btn-zoom">Anzeigen</button>
+      <button (click)="dismiss()" class="btn-close">✕</button>
+    </div>
+  </div>
+</div>

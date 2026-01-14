@@ -47,5 +47,19 @@
       <div class="row"><span>Speed Limit (V-free):</span> <span>80 km/h</span></div>
       <div class="row"><span>Normal Volume:</span> <span>~60 vehs/int</span></div>
     </div>
+
+    <div class="alerts-section" *ngIf="sensorAlerts.length > 0">
+      <h3>Alert History</h3>
+      <div class="alert-list">
+        <div class="alert-item" *ngFor="let alert of sensorAlerts">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-details">
+            <span class="alert-time">{{alert.timestamp | date:'shortTime'}}</span>
+            <span class="alert-msg">Ghost Driver ({{alert.details.speed_kph}} km/h)</span>
+            <span class="alert-plate">{{alert.details.license_plate}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 }

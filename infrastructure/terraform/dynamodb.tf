@@ -31,3 +31,19 @@ resource "aws_dynamodb_table" "aggregated_traffic_data" {
     type = "S"
   }
 }
+
+resource "aws_dynamodb_table" "alerts" {
+  name           = "UrbanFlowAlerts"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "alert_id"
+
+  attribute {
+    name = "alert_id"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "expiration_time"
+    enabled        = true
+  }
+}

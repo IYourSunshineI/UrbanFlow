@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { TrafficService, Sensor, TrafficData } from '../../services/traffic.service';
 import { Subscription } from 'rxjs';
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
+import { AlertService, Alert } from '../../services/alert.service';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './sidebar.component.html',
+  templateUrl: './sidebar.component.html', // Fixed URL key? No, it was templateUrl
   styleUrls: ['./sidebar.component.scss'],
   animations: [
     trigger('valueChange', [
@@ -39,10 +40,14 @@ export class SidebarComponent implements OnChanges, OnDestroy {
 
   selectedSensor: Sensor | undefined;
   currentData: TrafficData | undefined;
+  sensorAlerts: Alert[] = []; // Store alerts
   
   private dataSub: Subscription | undefined;
 
-  constructor(private trafficService: TrafficService) {}
+  constructor(
+      private trafficService: TrafficService,
+      private alertService: AlertService // Inject
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
       if (changes['selectedSensorId']) {
@@ -64,6 +69,7 @@ export class SidebarComponent implements OnChanges, OnDestroy {
       if (!this.selectedSensorId) {
           this.selectedSensor = undefined;
           this.currentData = undefined;
+          this.sensorAlerts = [];
           return;
       }
 
@@ -84,6 +90,11 @@ export class SidebarComponent implements OnChanges, OnDestroy {
                   };
               }
           }
+      });
+
+      // Fetch Alert History
+      this.alertService.getAlertsForSensor(this.selectedSensorId).subscribe(alerts => {
+          this.sensorAlerts = alerts;
       });
   }
 
