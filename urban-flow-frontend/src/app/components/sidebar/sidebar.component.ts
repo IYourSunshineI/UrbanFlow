@@ -67,15 +67,22 @@ export class SidebarComponent implements OnChanges, OnDestroy {
           return;
       }
 
-      // Find static sensor info
-      this.selectedSensor = this.trafficService.getSensors().find(s => s.id === this.selectedSensorId);
-
       // Subscribe to real-time data for this sensor
       if (this.dataSub) this.dataSub.unsubscribe();
       
       this.dataSub = this.trafficService.trafficData$.subscribe(map => {
           if (this.selectedSensorId) {
               this.currentData = map.get(this.selectedSensorId);
+              
+              // Populate selectedSensor from TrafficData (dynamic)
+              if (this.currentData) {
+                  this.selectedSensor = {
+                      id: this.currentData.sensorId,
+                      name: this.currentData.name,
+                      location: this.currentData.location,
+                      description: this.currentData.description || ''
+                  };
+              }
           }
       });
   }

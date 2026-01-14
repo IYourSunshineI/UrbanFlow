@@ -69,33 +69,7 @@ export class MapComponent implements OnInit, OnDestroy {
     // Note: initMap doesn't add markers directly anymore because subscribeToTraffic/filter handles it?
     // Wait, previous code added sensors in initMap.
     // We should keep that behavior or ensure filter runs. 
-    // The previous code had:
-    const sensors = this.trafficService.getSensors();
-    sensors.forEach(sensor => {
-      const marker = L.marker([sensor.location.lat, sensor.location.lng], {
-        icon: this.createCustomIcon('free'), // Default state
-        title: sensor.name,
-        alt: `Sensor at ${sensor.name}`
-      }).addTo(this.map!)
-        .bindTooltip(`
-          <div class="custom-tooltip-content">
-            <div class="tooltip-title">${sensor.name}</div>
-            <div class="tooltip-desc">${sensor.description}</div>
-            <div class="tooltip-click-hint">Click for details</div>
-          </div>
-        `, {
-          className: 'custom-tooltip',
-          direction: 'top',
-          offset: [0, -12],
-          opacity: 1
-        });
-
-      marker.on('click', () => {
-        this.sensorSelected.emit(sensor.id);
-      });
-
-      this.markers.set(sensor.id, marker);
-    });
+    // Markers will be added dynamically when traffic data arrives
   }
 
   private currentSearchTerm = '';
@@ -115,15 +89,16 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private updateMarkerVisibility(sensorId: string, marker: L.Marker): void {
-      const sensor = this.trafficService.getSensors().find(s => s.id === sensorId);
       const data = this.currentTrafficData.get(sensorId);
       
-      if (!sensor) return;
+      if (!data) return;
 
-      const matchesSearch = sensor.name.toLowerCase().includes(this.currentSearchTerm) || 
-                            sensor.description.toLowerCase().includes(this.currentSearchTerm);
+      // Filter by Search Term
+      const matchesSearch = data.name.toLowerCase().includes(this.currentSearchTerm) || 
+                            (data.description && data.description.toLowerCase().includes(this.currentSearchTerm));
       
-      const status = data?.status || 'free'; 
+      // Filter by Status
+      const status = data.status || 'free'; 
       const matchesStatus = this.currentActiveStatuses.length === 0 || this.currentActiveStatuses.includes(status);
 
       if (matchesSearch && matchesStatus) {
@@ -140,16 +115,44 @@ export class MapComponent implements OnInit, OnDestroy {
   private subscribeToTraffic(): void {
     this.trafficSub = this.trafficService.trafficData$.subscribe(dataMap => {
         this.currentTrafficData = dataMap;
-        
-        // Update Markers and re-apply filter logic
-        this.markers.forEach((marker, sensorId) => {
-            const data = dataMap.get(sensorId);
-            if (data) {
-                const newIcon = this.createCustomIcon(data.status);
-                marker.setIcon(newIcon);
-                // Re-evaluate visibility because status (which affects filtering) might have changed
-                this.updateMarkerVisibility(sensorId, marker);
-            }
+
+        // Iterate over traffic data to update/create markers
+        dataMap.forEach((data, sensorId) => {
+             let marker = this.markers.get(sensorId);
+
+             // Create marker if it doesn't exist
+             if (!marker) {
+                 marker = L.marker([data.location.lat, data.location.lng], {
+                    title: data.name,
+                    alt: `Sensor at ${data.name}`
+                 }).addTo(this.map!);
+
+                 marker.bindTooltip(`
+                  <div class="custom-tooltip-content">
+                    <div class="tooltip-title">${data.name}</div>
+                    <div class="tooltip-desc">${data.description}</div>
+                    <div class="tooltip-click-hint">Click for details</div>
+                  </div>
+                `, {
+                  className: 'custom-tooltip',
+                  direction: 'top',
+                  offset: [0, -12],
+                  opacity: 1
+                });
+
+                marker.on('click', () => {
+                   this.sensorSelected.emit(sensorId);
+                });
+
+                this.markers.set(sensorId, marker);
+             }
+
+             // Update Icon based on status
+             const newIcon = this.createCustomIcon(data.status);
+             marker.setIcon(newIcon);
+
+             // Apply filters
+             this.updateMarkerVisibility(sensorId, marker);
         });
     });
   }
