@@ -27,9 +27,13 @@ def lambda_handler(event, context):
     street_id = params.get("street_id")
 
     if not street_id:
+        data = get_all_data()
         return {
-            "statusCode": 400,
-            "body": json.dumps({"error": "street_id parameter is required"})
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": json.dumps(data, default=decimal_to_float)
         }
 
     if not street_id_exists(street_id):
@@ -63,3 +67,17 @@ def get_latest_data_for_street(street_id):
         Limit=1
     )
     return res.get("Items", [])
+
+def get_all_data():
+    items = []
+    response = table.scan()
+    items.extend(response.get("Items", []))
+
+    # Handle pagination
+    while "LastEvaluatedKey" in response:
+        response = table.scan(
+            ExclusiveStartKey=response["LastEvaluatedKey"]
+        )
+        items.extend(response.get("Items", []))
+
+    return items
