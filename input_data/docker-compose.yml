@@ -13,7 +13,7 @@ services:
     - --id
     - VIE-001
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '80'
     - --position
@@ -36,7 +36,7 @@ services:
     - --id
     - VIE-002
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '80'
     - --position
@@ -58,7 +58,7 @@ services:
     - --id
     - VIE-003
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '80'
     - --position
@@ -80,7 +80,7 @@ services:
     - --id
     - VIE-004
     - --interval
-    - '10.0'
+    - '1.0'
     - --limit
     - '130'
     - --position
@@ -102,7 +102,7 @@ services:
     - --id
     - VIE-005
     - --interval
-    - '10.0'
+    - '1.0'
     - --limit
     - '130'
     - --position
@@ -124,7 +124,7 @@ services:
     - --id
     - VIE-006
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -168,7 +168,7 @@ services:
     - --id
     - VIE-008
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -212,7 +212,7 @@ services:
     - --id
     - VIE-010
     - --interval
-    - '10.0'
+    - '1.0'
     - --limit
     - '50'
     - --position
@@ -234,7 +234,7 @@ services:
     - --id
     - VIE-011
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -256,7 +256,7 @@ services:
     - --id
     - VIE-012
     - --interval
-    - '10.0'
+    - '1.0'
     - --limit
     - '50'
     - --position
@@ -388,7 +388,7 @@ services:
     - --id
     - VIE-018
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -454,7 +454,7 @@ services:
     - --id
     - VIE-021
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -498,7 +498,7 @@ services:
     - --id
     - VIE-023
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -542,7 +542,7 @@ services:
     - --id
     - VIE-025
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -586,7 +586,7 @@ services:
     - --id
     - VIE-027
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -608,7 +608,7 @@ services:
     - --id
     - VIE-028
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -630,7 +630,7 @@ services:
     - --id
     - VIE-029
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -652,7 +652,7 @@ services:
     - --id
     - VIE-030
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -674,7 +674,7 @@ services:
     - --id
     - VIE-031
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -740,7 +740,7 @@ services:
     - --id
     - VIE-034
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -762,7 +762,7 @@ services:
     - --id
     - VIE-035
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -872,7 +872,7 @@ services:
     - --id
     - VIE-040
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -982,7 +982,7 @@ services:
     - --id
     - VIE-045
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position
@@ -1048,7 +1048,7 @@ services:
     - --id
     - VIE-048
     - --interval
-    - '10.0'
+    - '5.0'
     - --limit
     - '50'
     - --position

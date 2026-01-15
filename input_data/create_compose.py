@@ -32,6 +32,8 @@ def generate_compose_file():
             latitude = row['latitude']
             longitude = row['longitude']
 
+            interval = "1.0" if int(lanes) > 2 else "5.0" if int(lanes) > 1 else "10.0"
+
             # Create a clean service name (e.g., cam_vie_001)
             service_name = f"cam_{street_id.lower().replace('-', '_')}"
 
@@ -45,7 +47,7 @@ def generate_compose_file():
                 "command": [
                     "--name", street_name,
                     "--id", street_id,
-                    "--interval", "10.0",  # Slower interval to save resources
+                    "--interval", interval,
                     "--limit", speed_limit,
                     "--position", "1",  # Single camera at position 1 (can be changed when adding average speed)
                     "--lanes", lanes,

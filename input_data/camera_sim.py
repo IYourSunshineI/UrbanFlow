@@ -64,8 +64,7 @@ def generate_vehicle_data(street_name, street_id, speed_limit, lanes, camera_pos
     # 1. Determine if we should simulate a sensor glitch (5% chance)
     if random.random() < ERROR_RATE:
         is_error = True
-        # 50/50 chance between negative speed or impossible speed
-        if random.choice([True, False]):
+        if random.random() < 0.05:
             # Error Type A: Negative Velocity (e.g., -15 km/h)
             current_speed = round(random.uniform(-50.0, -1.0), 1)
         else:
