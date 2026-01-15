@@ -64,7 +64,7 @@
     align-items: center;
     gap: 16px;
     margin-bottom: 24px;
-    border-left: 4px solid transparent; // Set dynamically
+    border-left: 4px solid transparent;
     transition: all 0.3s ease;
 
     .status-indicator {
@@ -104,7 +104,7 @@
         .icon { font-size: 1.2rem; }
         
         .metric-content {
-             flex: 1; // Take available space
+             flex: 1;
              
              .metric-label {
                  font-size: 0.8rem;

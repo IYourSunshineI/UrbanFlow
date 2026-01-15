@@ -1,41 +1,35 @@
 /**
  * API Configuration for UrbanFlow Frontend
- * 
+ *
  * LocalStack API Gateway URL format:
  * http://localhost:4566/restapis/{api_id}/{stage}/_user_request_/{resource}
+ *
+ * After terraform apply, update apiId below with: terraform output -raw api_id
  */
 
 export const environment = {
   production: false,
-
-  // LocalStack API Gateway base URL
-  // The API ID will need to be updated after terraform apply
   apiBaseUrl: 'http://localhost:4566/restapis',
-
-  // Default stage name from Terraform
+  apiId: 'tivy2m751f', // <- UPDATE THIS after terraform apply
   apiStage: 'dev',
-
-  // Traffic endpoint resource path
   trafficEndpoint: 'traffic',
-
-  // Polling interval in milliseconds (how often to fetch new data)
+  alertsEndpoint: 'alerts',
   pollingIntervalMs: 5000,
-
-  // WebSocket URL (Update after terraform apply)
-  websocketUrl: 'wss://placeholder-url', 
+  websocketUrl: 'wss://placeholder-url',
 };
 
-/**
- * Build the full API URL for the traffic endpoint.
- * @param apiId - The API Gateway REST API ID (from terraform output)
- */
-export function getTrafficApiUrl(apiId: string): string {
-  return `${environment.apiBaseUrl}/${apiId}/${environment.apiStage}/_user_request_/${environment.trafficEndpoint}`;
+export function getTrafficApiUrl(): string {
+  return `${environment.apiBaseUrl}/${environment.apiId}/${environment.apiStage}/_user_request_/${environment.trafficEndpoint}`;
 }
 
-/**
- * Build URL for a specific street
- */
-export function getStreetTrafficUrl(apiId: string, streetId: string): string {
-  return `${getTrafficApiUrl(apiId)}?street_id=${streetId}`;
+export function getStreetTrafficUrl(streetId: string): string {
+  return `${getTrafficApiUrl()}?street_id=${streetId}`;
+}
+
+export function getAlertsApiUrl(sensorId?: string): string {
+  let url = `${environment.apiBaseUrl}/${environment.apiId}/${environment.apiStage}/_user_request_/${environment.alertsEndpoint}`;
+  if (sensorId) {
+    url += `?street_id=${sensorId}`;
+  }
+  return url;
 }

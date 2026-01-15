@@ -13,22 +13,17 @@ export interface Sensor {
 export interface TrafficData {
   sensorId: string;
   timestamp: Date;
-  avgSpeed: number; // km/h
-  vehicleCount: number; // per interval
-  congestionIndex: number; // CI
+  avgSpeed: number;
+  vehicleCount: number;
+  congestionIndex: number;
   status: 'free' | 'dense' | 'near_capacity' | 'congested';
-  history: number[]; // Sparkline data (last 20 speed values)
-  vehicleHistory?: number[]; // Sparkline data (last 20 vehicle count values)
-  
-  // Metadata from API
+  history: number[];
+  vehicleHistory?: number[];
   name: string;
   location: { lat: number; lng: number };
   description?: string;
 }
 
-/**
- * API Response format from Lambda reader
- */
 interface ApiTrafficData {
   street_id: string;
   street_name: string;
@@ -45,23 +40,17 @@ interface ApiTrafficData {
   providedIn: 'root'
 })
 export class TrafficService implements OnDestroy {
-
-  // API Gateway REST API ID - must be set after terraform apply
-  // You can get this from: terraform output api_id
-  private apiId = '7fkhcwqihv'; 
-
-  // Mock definitions for simulation fallback
   private sensors: Sensor[] = [
     { id: 'S1', name: 'Main St', location: { lat: 40.7128, lng: -74.0060 }, description: 'Downtown' },
     { id: 'S2', name: 'Broadway', location: { lat: 40.7580, lng: -73.9855 }, description: 'Midtown' },
     { id: 'S3', name: 'Wall St', location: { lat: 40.7060, lng: -74.0088 }, description: 'Financial District' }
   ];
 
-  // Store latest data for each sensor
   private trafficState = new BehaviorSubject<Map<string, TrafficData>>(new Map());
   private historyBuffer = new Map<string, { speeds: number[], counts: number[] }>();
   private pollingSub: Subscription | null = null;
-  private useMockData = false; // Set to true to use mock data for testing
+  private useMockData = false;
+  private mockInterval: any;
 
   public trafficData$ = this.trafficState.asObservable();
 
@@ -73,25 +62,13 @@ export class TrafficService implements OnDestroy {
     this.stopPolling();
   }
 
-  /**
-   * Set the API Gateway ID (from terraform output)
-   */
-  setApiId(apiId: string): void {
-    this.apiId = apiId;
-  }
-
-  /**
-   * Toggle between mock and real data
-   */
   setUseMockData(useMock: boolean): void {
     this.useMockData = useMock;
   }
 
   private startPolling(): void {
-    // Initial fetch
     this.fetchTrafficData();
 
-    // Poll at configured interval
     this.pollingSub = interval(environment.pollingIntervalMs).pipe(
       switchMap(() => this.useMockData ? of(null) : this.fetchFromApi()),
       catchError(err => {
@@ -100,7 +77,6 @@ export class TrafficService implements OnDestroy {
       })
     ).subscribe();
 
-    // If mock mode, run simulation
     if (this.useMockData) {
       this.startMockSimulation();
     }
@@ -122,8 +98,8 @@ export class TrafficService implements OnDestroy {
   }
 
   private fetchFromApi() {
-    const url = getTrafficApiUrl(this.apiId);
-    
+    const url = getTrafficApiUrl();
+
     return this.http.get<ApiTrafficData[]>(url).pipe(
       tap(data => {
         if (Array.isArray(data)) {
@@ -143,13 +119,9 @@ export class TrafficService implements OnDestroy {
 
     apiData.forEach(item => {
       const streetId = item.street_id;
-      // Location now comes directly from API
       const location = { lat: item.latitude, lng: item.longitude };
-
-      // Calculate status from congestion index
       const status = this.getStatusFromCI(item.congestion_index);
 
-      // Maintain history buffer
       let buffer = this.historyBuffer.get(streetId);
       if (!buffer) {
         buffer = { speeds: [], counts: [] };
@@ -158,8 +130,7 @@ export class TrafficService implements OnDestroy {
 
       buffer.speeds.push(Math.floor(item.average_speed_kph));
       buffer.counts.push(item.vehicle_count);
-      
-      // Keep last 20 entries
+
       if (buffer.speeds.length > 20) buffer.speeds.shift();
       if (buffer.counts.length > 20) buffer.counts.shift();
 
@@ -188,10 +159,6 @@ export class TrafficService implements OnDestroy {
     return 'congested';
   }
 
-  // ============ Mock Data Generation (for testing without backend) ============
-
-  private mockInterval: any;
-
   private startMockSimulation(): void {
     this.mockInterval = setInterval(() => {
       this.generateMockData();
@@ -207,8 +174,8 @@ export class TrafficService implements OnDestroy {
       const randomVariation = (Math.random() * 20) - 10;
 
       let avgSpeed = Math.max(0, Math.min(100, baseSpeed + randomVariation));
-      let vehicleCount = isRushHour 
-        ? Math.floor(Math.random() * 100) + 50 
+      let vehicleCount = isRushHour
+        ? Math.floor(Math.random() * 100) + 50
         : Math.floor(Math.random() * 20) + 5;
 
       const freeFlow = 80;
@@ -216,7 +183,6 @@ export class TrafficService implements OnDestroy {
       const status = this.getStatusFromCI(ci);
       const finalAvgSpeed = Math.floor(avgSpeed);
 
-      // Maintain history buffer
       let buffer = this.historyBuffer.get(sensor.id);
       if (!buffer) {
         buffer = { speeds: [], counts: [] };

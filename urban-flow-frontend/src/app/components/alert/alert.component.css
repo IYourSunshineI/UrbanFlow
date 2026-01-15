@@ -1,6 +1,6 @@
 .alert-banner {
   position: fixed;
-  top: 20px;
+  bottom: 20px; /* Changed from top to bottom */
   left: 50%;
   transform: translateX(-50%);
   background-color: #ff3b30;
@@ -9,7 +9,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   z-index: 9999;
-  animation: slideDown 0.5s ease-out;
+  animation: slideUp 0.5s ease-out; /* Changed animation name */
   width: 90%;
   max-width: 500px;
 }
@@ -63,7 +63,7 @@
   cursor: pointer;
 }
 
-@keyframes slideDown {
-  from { transform: translate(-50%, -100%); opacity: 0; }
+@keyframes slideUp {
+  from { transform: translate(-50%, 100%); opacity: 0; } /* Changed from/to for slideUp */
   to { transform: translate(-50%, 0); opacity: 1; }
 }

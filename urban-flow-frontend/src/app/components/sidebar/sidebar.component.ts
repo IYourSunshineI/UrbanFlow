@@ -9,7 +9,7 @@ import { AlertService, Alert } from '../../services/alert.service';
   selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './sidebar.component.html', // Fixed URL key? No, it was templateUrl
+  templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
   animations: [
     trigger('valueChange', [
@@ -20,14 +20,14 @@ import { AlertService, Alert } from '../../services/alert.service';
       transition(':increment', [
         animate('300ms ease-out', keyframes([
           style({ transform: 'scale(1)', offset: 0 }),
-          style({ transform: 'scale(1.1)', color: '#00ff9d', offset: 0.5 }), // Green flash on up
+          style({ transform: 'scale(1.1)', color: '#00ff9d', offset: 0.5 }),
           style({ transform: 'scale(1)', offset: 1 })
         ]))
       ]),
       transition(':decrement', [
         animate('300ms ease-out', keyframes([
           style({ transform: 'scale(1)', offset: 0 }),
-          style({ transform: 'scale(1.1)', color: '#ff5252', offset: 0.5 }), // Red flash on down
+          style({ transform: 'scale(1.1)', color: '#ff5252', offset: 0.5 }),
           style({ transform: 'scale(1)', offset: 1 })
         ]))
       ])
@@ -40,97 +40,87 @@ export class SidebarComponent implements OnChanges, OnDestroy {
 
   selectedSensor: Sensor | undefined;
   currentData: TrafficData | undefined;
-  sensorAlerts: Alert[] = []; // Store alerts
-  
+  sensorAlerts: Alert[] = [];
+
   private dataSub: Subscription | undefined;
 
   constructor(
-      private trafficService: TrafficService,
-      private alertService: AlertService // Inject
+    private trafficService: TrafficService,
+    private alertService: AlertService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-      if (changes['selectedSensorId']) {
-          this.updateSelection();
-      }
+    if (changes['selectedSensorId']) {
+      this.updateSelection();
+    }
   }
 
   ngOnDestroy(): void {
-      if (this.dataSub) {
-          this.dataSub.unsubscribe();
-      }
+    if (this.dataSub) {
+      this.dataSub.unsubscribe();
+    }
   }
 
   closeSidebar(): void {
-      this.close.emit();
+    this.close.emit();
   }
 
   private updateSelection(): void {
-      if (!this.selectedSensorId) {
-          this.selectedSensor = undefined;
-          this.currentData = undefined;
-          this.sensorAlerts = [];
-          return;
+    if (!this.selectedSensorId) {
+      this.selectedSensor = undefined;
+      this.currentData = undefined;
+      this.sensorAlerts = [];
+      return;
+    }
+
+    if (this.dataSub) this.dataSub.unsubscribe();
+
+    this.dataSub = this.trafficService.trafficData$.subscribe(map => {
+      if (this.selectedSensorId) {
+        this.currentData = map.get(this.selectedSensorId);
+
+        if (this.currentData) {
+          this.selectedSensor = {
+            id: this.currentData.sensorId,
+            name: this.currentData.name,
+            location: this.currentData.location,
+            description: this.currentData.description || ''
+          };
+        }
       }
+    });
 
-      // Subscribe to real-time data for this sensor
-      if (this.dataSub) this.dataSub.unsubscribe();
-      
-      this.dataSub = this.trafficService.trafficData$.subscribe(map => {
-          if (this.selectedSensorId) {
-              this.currentData = map.get(this.selectedSensorId);
-              
-              // Populate selectedSensor from TrafficData (dynamic)
-              if (this.currentData) {
-                  this.selectedSensor = {
-                      id: this.currentData.sensorId,
-                      name: this.currentData.name,
-                      location: this.currentData.location,
-                      description: this.currentData.description || ''
-                  };
-              }
-          }
-      });
-
-      // Fetch Alert History
-      this.alertService.getAlertsForSensor(this.selectedSensorId).subscribe(alerts => {
-          this.sensorAlerts = alerts;
-      });
+    this.alertService.getAlertsForSensor(this.selectedSensorId).subscribe(alerts => {
+      this.sensorAlerts = alerts;
+    });
   }
 
   get congestionLevel(): string {
-      return this.currentData?.status || 'unknown';
+    return this.currentData?.status || 'unknown';
   }
 
   get congestionColor(): string {
-     switch(this.currentData?.status) {
-         case 'free': return 'var(--color-success)';
-         case 'dense': return 'var(--color-warning)';
-         case 'near_capacity': return '#ff9100'; // Orange
-         case 'congested': return 'var(--color-critical)';
-         default: return 'var(--color-text-secondary)';
-     }
+    switch (this.currentData?.status) {
+      case 'free': return 'var(--color-success)';
+      case 'dense': return 'var(--color-warning)';
+      case 'near_capacity': return '#ff9100';
+      case 'congested': return 'var(--color-critical)';
+      default: return 'var(--color-text-secondary)';
+    }
   }
 
   getSparklinePath(data: number[] | undefined, maxVal: number = 100): string {
     if (!data || data.length < 2) return '';
-    
+
     const width = 100;
     const height = 30;
     const min = 0;
-    // Dynamic max can be better? For now user provided fixed max context
-    // Speed max ~ 120, Volume max ~ 150 (rush hour peak)
-    
+    const padding = 2;
+    const effectiveWidth = width - (2 * padding);
+
     return data.map((val, i) => {
-      // Use minimal padding logic
-      // We want the last point to be exactly at the right edge
-      const padding = 2;
-      const effectiveWidth = width - (2 * padding);
-      
       const x = padding + (i * (effectiveWidth / (data.length - 1)));
-      
-      // Scale Y
-      const y = height - ((val - min) / (maxVal - min)) * height; 
+      const y = height - ((val - min) / (maxVal - min)) * height;
       return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
     }).join(' ');
   }
