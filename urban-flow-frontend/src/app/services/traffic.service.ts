@@ -22,6 +22,7 @@ export interface TrafficData {
   name: string;
   location: { lat: number; lng: number };
   description?: string;
+  speedLimit: number;
 }
 
 interface ApiTrafficData {
@@ -145,7 +146,8 @@ export class TrafficService implements OnDestroy {
         vehicleHistory: [...buffer.counts],
         name: item.street_name,
         location: location,
-        description: `Traffic data for ${item.street_name}`
+        description: `Traffic data for ${item.street_name}`,
+        speedLimit: item.speed_limit_kph
       });
     });
 
@@ -205,7 +207,8 @@ export class TrafficService implements OnDestroy {
         vehicleHistory: [...buffer.counts],
         name: sensor.name,
         location: sensor.location,
-        description: sensor.description
+        description: sensor.description,
+        speedLimit: 80
       });
     });
 

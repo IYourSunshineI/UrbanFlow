@@ -10,7 +10,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:4566/restapis',
-  apiId: 'tivy2m751f', // <- UPDATE THIS after terraform apply
+  apiId: 'iianki73yo', // <- UPDATE THIS after terraform apply
   apiStage: 'dev',
   trafficEndpoint: 'traffic',
   alertsEndpoint: 'alerts',

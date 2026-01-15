@@ -43,9 +43,10 @@
       </div>
     </div>
     <div class="context-info">
-      <h3>Reference Values (Context)</h3>
-      <div class="row"><span>Speed Limit (V-free):</span> <span>80 km/h</span></div>
-      <div class="row"><span>Normal Volume:</span> <span>~60 vehs/int</span></div>
+      <h3>Speed Limit</h3>
+      <div class="speed-limit-sign">
+        <span class="speed-value">{{currentData?.speedLimit || '--'}}</span>
+      </div>
     </div>
 
     <div class="alerts-section" *ngIf="sensorAlerts.length > 0">
