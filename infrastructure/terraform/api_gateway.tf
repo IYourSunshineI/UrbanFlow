@@ -29,7 +29,10 @@ resource "aws_api_gateway_integration" "lambda_integration" {
 resource "aws_api_gateway_deployment" "deployment" {
   depends_on = [
     aws_api_gateway_integration.lambda_integration,
-    aws_api_gateway_integration.alerts_integration
+    aws_api_gateway_integration.alerts_integration,
+
+    aws_api_gateway_integration.options_integration,
+    aws_api_gateway_integration.options_alerts_integration
   ]
 
   rest_api_id = aws_api_gateway_rest_api.urbanflow_api.id
@@ -94,6 +97,10 @@ resource "aws_api_gateway_integration_response" "options_integration_response" {
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
+
+  depends_on = [
+    aws_api_gateway_integration.options_integration
+  ]
 }
 
 # Alerts Resource
@@ -163,4 +170,8 @@ resource "aws_api_gateway_integration_response" "options_alerts_integration_resp
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
+  
+  depends_on = [
+    aws_api_gateway_integration.options_alerts_integration
+  ]
 }

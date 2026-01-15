@@ -5,7 +5,7 @@ import os
 import json
 import base64
 
-AGGREGATION_FUNCTION_NAME = os.getenv('AGGREGATION_FUNCTION_NAME')
+AGGREGATION_QUEUE_URL = os.getenv('AGGREGATION_QUEUE_URL')
 
 CAMERA_ID_PATTERN = re.compile(r'CAM-[A-Z]{3}-\d{3}-\d{2}')
 LICENSE_PLATE_PATTERN = re.compile(r'[A-Z]{2} \d{3}[A-Z]{2}')
@@ -83,16 +83,34 @@ def validate_data(payload):
     return True, None
 
 
-def forward_to_aggregation(payload):
-    if not AGGREGATION_FUNCTION_NAME:
-        print("AGGREGATION_FUNCTION_NAME is not set. Skipping invoke...")
+def forward_to_aggregation(valid_records):
+    if not AGGREGATION_QUEUE_URL:
+        print("AGGREGATION_QUEUE_URL is not set. Skipping send...")
         return
 
-    lambda_client = boto3.client('lambda')
-    lambda_client.invoke(
-        FunctionName=AGGREGATION_FUNCTION_NAME,
-        InvocationType='Event',
-        Payload=json.dumps(payload).encode('utf-8'))
+    sqs_client = boto3.client('sqs')
+    
+    # Batch send message to SQS (max 10 per batch call)
+    # We iterate and send in chunks
+    chunk_size = 10
+    
+    for i in range(0, len(valid_records), chunk_size):
+        chunk = valid_records[i:i + chunk_size]
+        entries = []
+        for idx, record in enumerate(chunk):
+            entries.append({
+                'Id': str(idx),
+                'MessageBody': json.dumps(record)
+            })
+            
+        try:
+            sqs_client.send_message_batch(
+                QueueUrl=AGGREGATION_QUEUE_URL,
+                Entries=entries
+            )
+            print(f"Sent batch of {len(entries)} records to SQS")
+        except Exception as e:
+            print(f"Failed to send batch to SQS: {e}")
 
 
 def parse_kinesis_records(records):

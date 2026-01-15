@@ -36,7 +36,11 @@ resource "aws_iam_policy" "lambda_kinesis_dynamodb_policy" {
           "dynamodb:GetItem",
           "dynamodb:Scan",
           "dynamodb:Query",
-          "dynamodb:UpdateItem"
+          "dynamodb:UpdateItem",
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes"
         ]
         Resource = "*"
       }
@@ -62,7 +66,7 @@ resource "aws_lambda_function" "ingestion_processor" {
 
   environment {
     variables = {
-      AGGREGATION_FUNCTION_NAME = aws_lambda_function.data_aggregator.arn
+      AGGREGATION_QUEUE_URL = aws_sqs_queue.urbanflow_aggregation_queue.url
     }
   }
 }
@@ -147,4 +151,11 @@ resource "aws_lambda_event_source_mapping" "anomaly_detector_kinesis" {
   function_name     = aws_lambda_function.anomaly_detector.arn
   starting_position = "LATEST"
   batch_size        = var.lambda_batch_size
+}
+
+resource "aws_lambda_event_source_mapping" "sqs_trigger" {
+  event_source_arn = aws_sqs_queue.urbanflow_aggregation_queue.arn
+  function_name    = aws_lambda_function.data_aggregator.arn
+  batch_size       = var.aggregation_batch_size
+  maximum_batching_window_in_seconds = var.aggregation_batch_window
 }

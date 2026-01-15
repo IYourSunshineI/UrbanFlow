@@ -15,16 +15,21 @@ CALCULATION_ARN = os.environ.get('CONGESTION_CALCULATION_ARN')
 
 def lambda_handler(event, context):
     """
-    Triggered by Validation Lambda.
+    Triggered by SQS Trigger.
     """
-    data_points = event
+    records = event.get('Records', [])
+    data_points = []
 
-    if not isinstance(data_points, list):
-        print(f"Unexpected data format. Expected list, got {type(data_points)}")
-        return {'statusCode': 400, 'message': 'Invalid data format'}
-    
+    for record in records:
+        try:
+            body = json.loads(record['body'])
+            data_points.append(body)
+        except Exception as e:
+            print(f"Error parsing record: {e}")
+            continue
+
     if not data_points:
-        print("No valid data points found.")
+        print("No valid data points found in records.")
         return {'statusCode': 200, 'message': 'No data points to process'}
     
     street_stats = aggregate_metrics(data_points)

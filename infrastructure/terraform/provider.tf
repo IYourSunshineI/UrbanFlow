@@ -18,5 +18,6 @@ provider "aws" {
     s3             = "http://localhost:4566"
     iam            = "http://localhost:4566"
     cloudwatchlogs = "http://localhost:4566"
+    sqs            = "http://localhost:4566"
   }
 }
