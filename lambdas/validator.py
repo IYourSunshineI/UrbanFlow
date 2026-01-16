@@ -37,7 +37,7 @@ def validate_schema(payload):
         if field not in payload:
             return False, f"Missing field: {field}"
         if not isinstance(payload[field], field_type):
-            return False, f"Incorrect type for field: {field}. Expected {field_type.__name__}, got {type(payload[field]).__name__}"
+            return False, f"Incorrect type for field: {field}. Expected {field_type}, got {type(payload[field]).__name__}"
     return True, None
 
 
