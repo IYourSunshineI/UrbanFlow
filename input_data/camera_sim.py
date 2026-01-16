@@ -16,7 +16,7 @@ STREAM_NAME = "urbanflow-input-stream"
 ERROR_RATE = 0.05  # 5% chance of a sensor error
 
 # Traffic Jam Configuration
-JAM_PROBABILITY = 0.2   # 10% chance to start a traffic jam if traffic is normal
+JAM_PROBABILITY = 0.1   # 10% chance to start a traffic jam if traffic is normal
 JAM_DURATION_MIN = 5    # Minimum number of reports the jam lasts
 JAM_DURATION_MAX = 15   # Maximum number of reports the jam lasts
 
