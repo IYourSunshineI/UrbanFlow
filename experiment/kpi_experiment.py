@@ -5,24 +5,23 @@ import random
 import datetime
 import boto3
 import threading
+import csv
 from botocore.config import Config
 
 # Configuration
 ENDPOINT_URL = "http://localhost:4566"
 REGION = "us-east-1"
-STREAM_NAME = "urbanflow-input-stream"  # [cite: 20]
+STREAM_NAME = "urbanflow-input-stream"
 # Using the aggregated table for freshness checks as it's the result of the pipeline
 DYNAMODB_TABLE = "UrbanFlowAggregatedTrafficData"
 LAMBDA_FUNC_NAME = "UrbanFlowIngestionProcessor"
+CSV_FILENAME = "latency_freshness_results.csv"
 
 # Experiment Settings
 WARM_UP_RATE = 500  # events/sec
 WARM_UP_DURATION = 18  # seconds (3 minutes)
 RAMP_UP_RATE = 10000  # events/sec
 RAMP_UP_DURATION = 30  # seconds (5 minutes)
-
-# Kinesis Limits
-MAX_RECORDS_PER_BATCH = 500  # Kinesis PutRecords limit
 
 # AWS Clients
 dummy_creds = {
@@ -42,8 +41,10 @@ stats = {
     "sent_events": 0,
     "failed_events": 0,
     "latency_samples": [],  # End-to-End latency in ms
-    "freshness_samples": []  # Ingestion delay in ms
+    "freshness_samples": [],  # Ingestion delay in ms
+    "sample_timestamps": [] # Timestamps for when the samples were recorded
 }
+stats_lock = threading.Lock()
 
 
 def generate_record():
@@ -74,53 +75,56 @@ def generate_record():
 
 def load_generator(target_rate, duration, phase_name):
     """
-    Generates load at a specific rate using Kinesis PutRecords for efficiency.
+    Generates load using Kinesis Batching (PutRecords) to ensure
+    the queue doesn't back up and cause the script to hang.
     """
     print(f"--- Starting {phase_name}: Target {target_rate} events/sec for {duration}s ---")
 
     start_time = time.time()
     next_batch_time = start_time
 
-    # Calculate how many batches of 500 we need per second to hit target
-    batches_per_sec = max(1, target_rate // MAX_RECORDS_PER_BATCH)
+    # Batch size limit for Kinesis is 500
+    BATCH_SIZE = 500
+
+    # Calculate how many BATCHES we need per second
+    # e.g., 10,000 events / 500 batch = 20 http requests/sec (Very manageable)
+    batches_per_sec = max(1, target_rate // BATCH_SIZE)
     interval = 1.0 / batches_per_sec
 
     while (time.time() - start_time) < duration:
-        # Prepare a batch
+        # 1. Prepare a Batch
         records_batch = []
-        for _ in range(MAX_RECORDS_PER_BATCH):
+
+        for _ in range(BATCH_SIZE):
             data = generate_record()
+
+            # Randomly track latency for one item in the batch
+            if random.random() < 0.001:
+                track_latency(data)
+
             records_batch.append({
                 'Data': json.dumps(data),
                 'PartitionKey': data['street_id']
             })
 
-            # Periodically sample for latency (tag 1 in 1000 requests)
-            if random.random() < 0.001:
-                track_latency(data)
-
-        # Send Batch
+        # 2. Send the Batch (One HTTP request instead of 500)
         try:
-            response = kinesis.put_records(
+            kinesis.put_records(
                 StreamName=STREAM_NAME,
                 Records=records_batch
             )
-
-            # Update counters
-            failed_count = response['FailedRecordCount']
-            stats["failed_events"] += failed_count
-            stats["sent_events"] += (len(records_batch) - failed_count)
-
+            with stats_lock:
+                stats["sent_events"] += len(records_batch)
         except Exception as e:
-            print(f"Error sending batch: {e}")
-            stats["failed_events"] += len(records_batch)
+            print(f"Batch failed: {e}")
+            with stats_lock:
+                stats["failed_events"] += len(records_batch)
 
-        # Rate Limiting
+        # 3. Rate Limiting (Sleep if we are too fast)
         next_batch_time += interval
         sleep_time = next_batch_time - time.time()
         if sleep_time > 0:
             time.sleep(sleep_time)
-
 
 def track_latency(data_payload):
     """
@@ -146,12 +150,15 @@ def track_latency(data_payload):
                 if 'Item' in response:
                     arrival_time = time.time()
                     latency = (arrival_time - send_time) * 1000  # ms
-                    stats["latency_samples"].append(latency)
-
+                    
                     # Freshness: Compare 'now' with the timestamp inside the data
                     event_time = datetime.datetime.fromisoformat(data_payload['timestamp'])
                     freshness = (datetime.datetime.now() - event_time).total_seconds() * 1000
-                    stats["freshness_samples"].append(freshness)
+                    
+                    with stats_lock:
+                        stats["latency_samples"].append(latency)
+                        stats["freshness_samples"].append(freshness)
+                        stats["sample_timestamps"].append(datetime.datetime.now().isoformat())
                     return
             except Exception:
                 pass
@@ -236,6 +243,28 @@ def calculate_results(total_duration):
 
     error_rate = (errors / invocations * 100) if invocations > 0 else 0
     print(f"7. Error Rate:       {error_rate:.2f}%")
+    
+    # Save detailed samples to CSV
+    save_samples_to_csv()
+
+
+def save_samples_to_csv():
+    """
+    Saves the collected latency and freshness samples to a CSV file.
+    """
+    try:
+        with open(CSV_FILENAME, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["timestamp", "latency_ms", "freshness_ms"])
+            
+            # Zip the lists together to write row by row
+            # Assuming all lists are appended to in the same order in track_latency
+            for ts, lat, fresh in zip(stats["sample_timestamps"], stats["latency_samples"], stats["freshness_samples"]):
+                writer.writerow([ts, f"{lat:.2f}", f"{fresh:.2f}"])
+                
+        print(f"\nDetailed samples saved to {CSV_FILENAME}")
+    except Exception as e:
+        print(f"Error saving CSV: {e}")
 
 
 # --- Main Execution ---
