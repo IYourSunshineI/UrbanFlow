@@ -48,9 +48,6 @@ stats_lock = threading.Lock()
 
 
 def generate_record():
-    """
-    Generates a single vehicle data record similar to camera_sim.py.
-    """
     street_id = f"{random.randint(100, 999)}"
     now = datetime.datetime.now()
 
@@ -74,25 +71,19 @@ def generate_record():
 
 
 def load_generator(target_rate, duration, phase_name):
-    """
-    Generates load using Kinesis Batching (PutRecords) to ensure
-    the queue doesn't back up and cause the script to hang.
-    """
     print(f"--- Starting {phase_name}: Target {target_rate} events/sec for {duration}s ---")
 
     start_time = time.time()
     next_batch_time = start_time
 
-    # Batch size limit for Kinesis is 500
     BATCH_SIZE = 500
 
     # Calculate how many BATCHES we need per second
-    # e.g., 10,000 events / 500 batch = 20 http requests/sec (Very manageable)
     batches_per_sec = max(1, target_rate // BATCH_SIZE)
     interval = 1.0 / batches_per_sec
 
     while (time.time() - start_time) < duration:
-        # 1. Prepare a Batch
+        # Prepare a Batch
         records_batch = []
 
         for _ in range(BATCH_SIZE):
@@ -107,7 +98,7 @@ def load_generator(target_rate, duration, phase_name):
                 'PartitionKey': data['street_id']
             })
 
-        # 2. Send the Batch (One HTTP request instead of 500)
+        # Send the Batch (One HTTP request instead of 500)
         try:
             kinesis.put_records(
                 StreamName=STREAM_NAME,
@@ -120,33 +111,22 @@ def load_generator(target_rate, duration, phase_name):
             with stats_lock:
                 stats["failed_events"] += len(records_batch)
 
-        # 3. Rate Limiting (Sleep if we are too fast)
+        # Rate Limiting
         next_batch_time += interval
         sleep_time = next_batch_time - time.time()
         if sleep_time > 0:
             time.sleep(sleep_time)
 
 def track_latency(data_payload):
-    """
-    Spawns a thread to poll DynamoDB for a specific record to measure end-to-end latency.
-    """
-
     def poller(record_id, send_time):
         # Poll for up to 30 seconds
         for _ in range(30):
             try:
-                # We query the Aggregated table.
-                # Note: In a real scenario, we'd query by the specific unique ID,
-                # but based on your schema, the key is 'street_id'.
-                # For this test, we assume the aggregator updates the 'street_id' record.
                 response = dynamodb.get_item(
                     TableName=DYNAMODB_TABLE,
                     Key={'street_id': {'S': data_payload['street_id']}}
                 )
 
-                # In a real heavy load test, verifying exact record arrival
-                # without a unique ID in DynamoDB is hard.
-                # We assume if the item exists, data flowed through.
                 if 'Item' in response:
                     arrival_time = time.time()
                     latency = (arrival_time - send_time) * 1000  # ms
@@ -168,7 +148,6 @@ def track_latency(data_payload):
 
 
 def get_cloudwatch_metrics(start_time, end_time):
-    """Retrieves Lambda metrics from LocalStack CloudWatch."""
     print("--- Fetching CloudWatch Metrics ---")
 
     # Wait briefly for metrics to settle
@@ -237,7 +216,6 @@ def calculate_results(total_duration):
     if invocations > 0:
         batch_efficiency = stats["sent_events"] / invocations
         print(f"6. Batch Efficiency: {batch_efficiency:.2f} records/invocation")
-        # Note: Ideal is close to 500
     else:
         print("6. Batch Efficiency: N/A")
 
@@ -249,16 +227,11 @@ def calculate_results(total_duration):
 
 
 def save_samples_to_csv():
-    """
-    Saves the collected latency and freshness samples to a CSV file.
-    """
     try:
         with open(CSV_FILENAME, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["timestamp", "latency_ms", "freshness_ms"])
-            
-            # Zip the lists together to write row by row
-            # Assuming all lists are appended to in the same order in track_latency
+
             for ts, lat, fresh in zip(stats["sample_timestamps"], stats["latency_samples"], stats["freshness_samples"]):
                 writer.writerow([ts, f"{lat:.2f}", f"{fresh:.2f}"])
                 
@@ -267,7 +240,6 @@ def save_samples_to_csv():
         print(f"Error saving CSV: {e}")
 
 
-# --- Main Execution ---
 if __name__ == "__main__":
     print(f"Targeting LocalStack at {ENDPOINT_URL}")
     print(f"Stream: {STREAM_NAME}")
@@ -282,5 +254,5 @@ if __name__ == "__main__":
 
     total_duration = time.time() - total_start
 
-    # Step 3 & 4: Metrics & Evaluation
+    # Step 3: Metrics & Evaluation
     calculate_results(total_duration)
